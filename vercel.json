@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "outputDirectory": "public",
   "cleanUrls": true,
   "headers": [
     {
@@ -10,28 +11,6 @@
           "value": "public, max-age=31536000, immutable"
         }
       ]
-    }
-  ],
-  "rewrites": [
-    {
-      "source": "/hero-frames/(.*)",
-      "destination": "/public/hero-frames/$1"
-    },
-    {
-      "source": "/turntable-frames/(.*)",
-      "destination": "/public/turntable-frames/$1"
-    },
-    {
-      "source": "/fullarch-frames/(.*)",
-      "destination": "/public/fullarch-frames/$1"
-    },
-    {
-      "source": "/planning-frames/(.*)",
-      "destination": "/public/planning-frames/$1"
-    },
-    {
-      "source": "/images/(.*)",
-      "destination": "/public/images/$1"
     }
   ]
 }
