@@ -23,9 +23,19 @@
   <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
   <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;family=Space+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <!-- GSAP & ScrollTrigger Mobile Scrollytelling Engine -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
   <style>
     html {
       scroll-behavior: smooth;
+      touch-action: pan-y;
+      -webkit-overflow-scrolling: touch;
+    }
+    body {
+      touch-action: pan-y;
+      -webkit-overflow-scrolling: touch;
+      overflow-x: hidden;
     }
     .scroll-mt-20 {
       scroll-margin-top: 5rem;
@@ -34,9 +44,6 @@
       html, body {
         margin: 0;
         padding: 0;
-      }
-      body {
-        overscroll-behavior: none;
       }
       main > :first-child {
         margin-top: 0 !important;
@@ -48,8 +55,16 @@
     ::-webkit-scrollbar {
       display: none;
     }
-    #hero-canvas {
+    #hero-canvas,
+    #turntableCanvas,
+    #fullarchCanvas,
+    #planningCanvas {
       will-change: transform;
+      touch-action: pan-y !important;
+      pointer-events: none;
+    }
+    #turntableStage {
+      touch-action: pan-y !important;
     }
 
     /* ---- SOPHISTICATION LAYER: grain, spotlight, tilt, reveal ---- */
@@ -157,23 +172,23 @@
     <div class="flex flex-col w-full text-on-surface">
 
       <!-- 1. SCROLL-DRIVEN FRAME ANIMATION HERO (3D STICKY/PINNED STAGE) -->
-      <section id="hero-scroll-container" class="relative w-full h-[280vh] bg-surface">
-        <!-- Pinned Sticky Stage (100vh) -->
-        <div id="hero-sticky-viewport" class="sticky top-0 w-full h-screen min-h-[640px] flex flex-col justify-between overflow-hidden px-margin-mobile lg:px-margin-desktop pt-24 pb-space-lg">
+      <section id="hero-scroll-container" class="relative w-full h-[280vh] bg-surface" style="touch-action: pan-y;">
+        <!-- Pinned Sticky Stage (100vh / 100dvh) -->
+        <div id="hero-sticky-viewport" class="sticky top-0 w-full h-screen h-[100dvh] min-h-0 lg:min-h-[640px] flex flex-col justify-between overflow-hidden px-margin-mobile lg:px-margin-desktop pt-20 lg:pt-24 pb-space-md lg:pb-space-lg" style="touch-action: pan-y;">
           
-          <!-- Fullscreen Hero Canvas Backdrop -->
+          <!-- Fullscreen Hero Canvas Backdrop (Layer 0) -->
           <div class="absolute inset-0 z-0 pointer-events-none overflow-hidden flex items-center justify-center">
-            <canvas id="hero-canvas" class="w-full h-full block"></canvas>
+            <canvas id="hero-canvas" class="w-full h-full block pointer-events-none" style="touch-action: pan-y;"></canvas>
             <!-- Vignette Gradients for Luxury Dark Integration -->
-            <div class="absolute inset-0 pointer-events-none bg-gradient-to-r from-surface/90 via-surface/30 to-transparent w-full lg:w-3/5"></div>
-            <div class="absolute inset-0 pointer-events-none bg-gradient-to-b from-surface/70 via-transparent to-surface/90"></div>
+            <div class="absolute inset-0 pointer-events-none bg-gradient-to-r from-surface/95 via-surface/40 to-transparent w-full lg:w-3/5"></div>
+            <div class="absolute inset-0 pointer-events-none bg-gradient-to-b from-surface/80 via-transparent to-surface/90"></div>
           </div>
 
           <!-- Ambient Luminous Radiance -->
-          <div class="pointer-events-none absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[680px] h-[680px] bg-primary/5 rounded-full blur-[140px]"></div>
+          <div class="pointer-events-none absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[680px] h-[680px] bg-primary/5 rounded-full blur-[140px] z-0"></div>
 
-          <!-- Top Technical Coordinate Ledger -->
-          <div class="relative z-10 flex flex-wrap items-center justify-between gap-y-space-xs text-on-surface-variant pt-space-xs pointer-events-auto">
+          <!-- Top Technical Coordinate Ledger (Layer 20) -->
+          <div class="relative z-20 flex flex-wrap items-center justify-between gap-y-space-xs text-on-surface-variant pt-space-xs pointer-events-auto">
             <div class="flex items-center gap-space-sm font-label-coordinate text-label-coordinate tracking-widest text-primary uppercase">
               <span class="w-1.5 h-1.5 rounded-full bg-primary animate-ping"></span>
               <span>SUÍTE CIRÚRGICA AUREA // CH-8001 ZURIQUE</span>
@@ -185,33 +200,33 @@
             </div>
           </div>
 
-          <!-- Centerpiece Stage: Split Typography & 3D Telemetry Overlay -->
-          <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-space-xl items-center my-auto py-space-md">
-            <!-- Left Column: Copy & CTAs -->
-            <div class="lg:col-span-6 flex flex-col space-y-space-md pointer-events-auto">
+          <!-- Centerpiece Stage: Split Typography & 3D Telemetry Overlay (Layer 20 / 30) -->
+          <div class="relative z-20 grid grid-cols-1 lg:grid-cols-12 gap-space-xl items-center my-auto py-space-xs lg:py-space-md">
+            <!-- Left Column: Copy & CTAs (Layer 30, strictly above canvas animation) -->
+            <div class="relative z-30 lg:col-span-6 flex flex-col space-y-space-xs lg:space-y-space-md pointer-events-auto max-w-xl">
               <div class="inline-flex items-center gap-space-xs font-label-technical text-label-technical tracking-widest text-primary uppercase">
                 <span>ARQUITETURAS CRANIANAS OSSEOINTEGRADAS</span>
               </div>
-              <h1 class="font-display-xl text-display-xl tracking-tight text-on-surface leading-none">
+              <h1 class="font-display-xl text-display-xl-mobile sm:text-5xl lg:text-display-xl tracking-tight text-on-surface leading-tight lg:leading-none drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]">
                 RECONSTRUA COM <span class="italic text-primary">PRECISÃO.</span>
               </h1>
-              <p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl font-light">
+              <p class="font-body-md lg:font-body-lg text-body-md lg:text-body-lg text-on-surface-variant max-w-xl font-light drop-shadow-[0_1px_6px_rgba(0,0,0,0.7)]">
                 Implantodontia avançada projetada com precisão micrométrica, planejamento biomecânico esquelético e longevidade celular.
               </p>
               <!-- CTA Cluster -->
-              <div class="pt-space-sm flex flex-wrap items-center gap-space-md">
-                <a class="inline-flex items-center justify-center px-space-lg py-space-sm bg-primary text-on-primary font-label-technical text-label-technical uppercase tracking-widest transition-all duration-200 hover:bg-primary-fixed shadow-md shadow-primary/10" data-path="evaluation" href="#evaluation">
+              <div class="pt-space-xs sm:pt-space-sm flex flex-wrap items-center gap-space-sm sm:gap-space-md">
+                <a class="inline-flex items-center justify-center px-space-md sm:px-space-lg py-space-xs sm:py-space-sm bg-primary text-on-primary font-label-technical text-label-technical uppercase tracking-widest transition-all duration-200 hover:bg-primary-fixed shadow-md shadow-primary/10" data-path="evaluation" href="#evaluation">
                   Agendar uma avaliação
                 </a>
-                <a class="inline-flex items-center gap-space-xs font-label-technical text-label-technical uppercase tracking-widest text-on-surface hover:text-primary transition-colors duration-150 py-space-sm" href="#anatomical-assembly">
+                <a class="inline-flex items-center gap-space-xs font-label-technical text-label-technical uppercase tracking-widest text-on-surface hover:text-primary transition-colors duration-150 py-space-xs sm:py-space-sm" href="#anatomical-assembly">
                   <span>Explorar implantodontia</span>
                   <span class="material-symbols-outlined text-[16px]">arrow_downward</span>
                 </a>
               </div>
             </div>
 
-            <!-- Right Column: 3D Stage Visualizer HUD Telemetry Overlay -->
-            <div class="lg:col-span-6 relative flex justify-center items-center pointer-events-none">
+            <!-- Right Column: 3D Stage Visualizer HUD Telemetry Overlay (Desktop only to prevent mobile overflow & obstruction) -->
+            <div class="hidden lg:flex lg:col-span-6 relative justify-center items-center pointer-events-none">
               <div id="hud-stage-frame" class="tilt-stage relative w-full max-w-lg aspect-[4/5] rounded-xl border border-outline-variant/30 bg-surface-container-lowest/15 backdrop-blur-[1px] shadow-2xl flex items-center justify-center p-space-md transition-all duration-300">
                 <!-- Overlaid HUD Telemetry Markers -->
                 <div class="absolute top-space-md left-space-md bg-surface-container-lowest/90 px-space-xs py-space-2xs rounded text-primary font-label-coordinate text-label-coordinate border border-outline-variant/20 flex items-center gap-1.5 shadow-sm">
@@ -243,23 +258,23 @@
             </div>
           </div>
 
-          <!-- Hero Bottom Telemetry Bar -->
-          <div class="relative z-10 grid grid-cols-1 sm:grid-cols-3 gap-space-md pt-space-md bg-surface-container-low/60 rounded-lg px-space-md py-space-sm backdrop-blur-sm pointer-events-auto">
+          <!-- Hero Bottom Telemetry Bar (Layer 20) -->
+          <div class="relative z-20 grid grid-cols-1 sm:grid-cols-3 gap-y-2 sm:gap-space-md pt-space-xs sm:pt-space-md bg-surface-container-low/80 rounded-lg px-space-md py-space-xs sm:py-space-sm backdrop-blur-md pointer-events-auto">
             <div class="flex items-center gap-space-sm">
-              <span class="material-symbols-outlined text-primary text-[22px]">verified</span>
+              <span class="material-symbols-outlined text-primary text-[20px] sm:text-[22px]">verified</span>
               <div class="flex flex-col">
-                <span class="font-label-technical text-label-technical text-on-surface uppercase">Taxa de Sucesso Cirúrgico</span>
-                <span class="font-label-coordinate text-label-coordinate text-primary font-bold"><span class="js-counter" data-count-to="99.4" data-decimals="1">0</span>% CLINICAL EFFICACY (10-YR)</span>
+                <span class="font-label-technical text-[10px] sm:text-label-technical text-on-surface uppercase">Taxa de Sucesso Cirúrgico</span>
+                <span class="font-label-coordinate text-[9px] sm:text-label-coordinate text-primary font-bold"><span class="js-counter" data-count-to="99.4" data-decimals="1">0</span>% EFICÁCIA CLÍNICA (10 ANOS)</span>
               </div>
             </div>
-            <div class="flex items-center gap-space-sm">
+            <div class="hidden sm:flex items-center gap-space-sm">
               <span class="material-symbols-outlined text-primary text-[22px]">precision_manufacturing</span>
               <div class="flex flex-col">
                 <span class="font-label-technical text-label-technical text-on-surface uppercase">Robótica Dinâmica</span>
                 <span class="font-label-coordinate text-label-coordinate text-on-surface-variant font-medium">RASTREAMENTO ÓPTICO EM TEMPO REAL</span>
               </div>
             </div>
-            <div class="flex items-center gap-space-sm">
+            <div class="hidden sm:flex items-center gap-space-sm">
               <span class="material-symbols-outlined text-primary text-[22px]">domain</span>
               <div class="flex flex-col">
                 <span class="font-label-technical text-label-technical text-on-surface uppercase">Centros Cirúrgicos</span>
@@ -337,9 +352,9 @@
           <!-- Exploded Diagram + Interactive Selector -->
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-space-xl items-center">
             <!-- Visual Assembly Glass Frame -->
-            <div class="lg:col-span-7 relative w-full aspect-square md:aspect-[16/10] bg-surface-container-lowest rounded-xl overflow-hidden shadow-2xl flex items-center justify-center p-space-md reveal-up select-none cursor-grab active:cursor-grabbing border border-outline-variant/30" id="turntableStage">
+            <div class="lg:col-span-7 relative w-full aspect-square md:aspect-[16/10] bg-surface-container-lowest rounded-xl overflow-hidden shadow-2xl flex items-center justify-center p-space-md reveal-up select-none cursor-grab active:cursor-grabbing border border-outline-variant/30" id="turntableStage" style="touch-action: pan-y;">
               <!-- Real 96-Frame Interactive Canvas Turntable (Task A) -->
-              <canvas id="turntableCanvas" class="w-full h-full block object-contain"></canvas>
+              <canvas id="turntableCanvas" class="w-full h-full block object-contain" style="touch-action: pan-y;"></canvas>
               
               <!-- HUD Overlays -->
               <div class="absolute bottom-space-md left-space-md bg-surface-container-lowest/90 backdrop-blur-md px-space-sm py-space-xs rounded font-label-coordinate text-label-coordinate text-on-surface-variant border border-outline-variant/20 flex items-center gap-2">
@@ -484,12 +499,12 @@
 
 
       <!-- 4B. TASK B: FULL-ARCH SKELETAL RECONSTRUCTION (SCROLL SEQUENCE) -->
-      <section id="fullarch-scroll-container" class="relative w-full h-[260vh] bg-surface-container-lowest relative z-10">
-        <div id="fullarch-sticky-viewport" class="sticky top-0 w-full h-screen min-h-[640px] flex flex-col justify-between overflow-hidden px-margin-mobile lg:px-margin-desktop pt-24 pb-space-lg relative">
+      <section id="fullarch-scroll-container" class="relative w-full h-[260vh] bg-surface-container-lowest relative z-10" style="touch-action: pan-y;">
+        <div id="fullarch-sticky-viewport" class="sticky top-0 w-full h-screen h-[100dvh] min-h-0 lg:min-h-[640px] flex flex-col justify-between overflow-hidden px-margin-mobile lg:px-margin-desktop pt-20 lg:pt-24 pb-space-md lg:pb-space-lg relative" style="touch-action: pan-y;">
           
           <!-- Full-Arch Canvas Background (Protected Layer 2) -->
           <div class="absolute inset-0 z-0 pointer-events-none overflow-hidden flex items-center justify-center">
-            <canvas id="fullarchCanvas" class="w-full h-full block"></canvas>
+            <canvas id="fullarchCanvas" class="w-full h-full block pointer-events-none" style="touch-action: pan-y;"></canvas>
             <div class="absolute inset-0 pointer-events-none bg-gradient-to-r from-surface-container-lowest/95 via-surface-container-lowest/30 to-transparent w-full lg:w-3/5"></div>
             <div class="absolute inset-0 pointer-events-none bg-gradient-to-b from-surface-container-lowest/80 via-transparent to-surface-container-lowest/90"></div>
           </div>
@@ -508,9 +523,9 @@
           </div>
 
           <!-- Centerpiece Stage: Responsive Narrative & Protected 3D Zone -->
-          <div class="relative z-10 grid grid-cols-1 md:grid-cols-12 gap-y-space-sm md:gap-space-xl items-center my-auto py-space-2xs md:py-space-md">
+          <div class="relative z-20 grid grid-cols-1 md:grid-cols-12 gap-y-space-sm md:gap-space-xl items-center my-auto py-space-2xs md:py-space-md">
             <!-- Left Column on Desktop / Title & Content on Mobile -->
-            <div class="md:col-span-5 xl:col-span-4 flex flex-col space-y-space-xs md:space-y-space-md pointer-events-auto max-w-md">
+            <div class="relative z-20 md:col-span-5 xl:col-span-4 flex flex-col space-y-space-xs md:space-y-space-md pointer-events-auto max-w-md">
               <div class="inline-flex items-center gap-space-xs font-label-technical text-label-technical tracking-widest text-primary uppercase">
                 <span>SEQUÊNCIA INTERATIVA DE ROLAGEM</span>
               </div>
@@ -632,12 +647,12 @@
 
 
       <!-- 5B. DIGITAL SURGICAL PLANNING SCROLL EXPERIENCE (TASK F & G) -->
-      <section id="planning-scroll-container" class="relative w-full h-[260vh] bg-surface relative z-10 scroll-mt-20">
-        <div id="planning-sticky-viewport" class="sticky top-0 w-full h-screen min-h-[640px] flex flex-col justify-between overflow-hidden px-margin-mobile lg:px-margin-desktop pt-24 pb-space-lg relative">
+      <section id="planning-scroll-container" class="relative w-full h-[260vh] bg-surface relative z-10 scroll-mt-20" style="touch-action: pan-y;">
+        <div id="planning-sticky-viewport" class="sticky top-0 w-full h-screen h-[100dvh] min-h-0 lg:min-h-[640px] flex flex-col justify-between overflow-hidden px-margin-mobile lg:px-margin-desktop pt-20 lg:pt-24 pb-space-md lg:pb-space-lg relative" style="touch-action: pan-y;">
           
           <!-- Planning Canvas Backdrop (Protected Layer 2) -->
           <div class="absolute inset-0 z-0 pointer-events-none overflow-hidden flex items-center justify-center">
-            <canvas id="planningCanvas" class="w-full h-full block"></canvas>
+            <canvas id="planningCanvas" class="w-full h-full block pointer-events-none" style="touch-action: pan-y;"></canvas>
             <!-- Vignette Gradients for Luxury Dark Blending -->
             <div class="absolute inset-0 pointer-events-none bg-gradient-to-r from-surface/95 via-surface/30 to-transparent w-full lg:w-3/5"></div>
             <div class="absolute inset-0 pointer-events-none bg-gradient-to-b from-surface/80 via-transparent to-surface/90"></div>
@@ -657,7 +672,7 @@
           </div>
 
           <!-- Centerpiece Stage: Responsive Narrative & Protected 3D Zone -->
-          <div class="relative z-10 grid grid-cols-1 md:grid-cols-12 gap-y-space-sm md:gap-space-xl items-center my-auto py-space-2xs md:py-space-md">
+          <div class="relative z-20 grid grid-cols-1 md:grid-cols-12 gap-y-space-sm md:gap-space-xl items-center my-auto py-space-2xs md:py-space-md">
             <!-- Left Column on Desktop / Title & Content on Mobile -->
             <div class="md:col-span-5 xl:col-span-4 flex flex-col space-y-space-xs md:space-y-space-md pointer-events-auto max-w-md">
               <div class="inline-flex items-center gap-space-xs font-label-technical text-label-technical tracking-widest text-primary uppercase">
@@ -1097,6 +1112,30 @@
   <script>
     (function() {
       // =========================================================================
+      // GSAP SCROLLTRIGGER MOBILE NORMALIZATION & SCROLLER CONFIGURATION
+      // =========================================================================
+      if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+        gsap.registerPlugin(ScrollTrigger);
+
+        ScrollTrigger.config({
+          autoRefreshEvents: "visibilitychange,DOMContentLoaded,load,resize"
+        });
+
+        // Ensure default window scroller without nested blocking
+        ScrollTrigger.defaults({
+          scroller: window,
+          anticipatePin: 1,
+          invalidateOnRefresh: true
+        });
+
+        // Mobile touch smoothness normalization
+        ScrollTrigger.normalizeScroll({
+          allowNestedScroll: true,
+          momentum: false
+        });
+      }
+
+      // =========================================================================
       // CONFIGURAÇÃO DO CONCIERGE: NÚMERO DO WHATSAPP DA CLÍNICA (TASK E)
       // Substitua pelo WhatsApp oficial com DDI + DDD (ex: "5511999998888")
       // =========================================================================
@@ -1159,7 +1198,7 @@
           let targetCenterY = ch * 0.5;
           let drawW, drawH;
 
-          if (isDesktop && heroHudStageFrame) {
+          if (isDesktop && heroHudStageFrame && heroHudStageFrame.offsetParent !== null) {
             const frameRect = heroHudStageFrame.getBoundingClientRect();
             const canvasRect = heroCanvas.getBoundingClientRect();
             targetCenterX = (frameRect.left + frameRect.width / 2 - canvasRect.left) * dpr;
@@ -1175,7 +1214,7 @@
               drawH = ch * 0.88;
               drawW = drawH * imgAspect;
             }
-            targetCenterY = ch * 0.52;
+            targetCenterY = ch * 0.50;
           }
 
           const drawX = targetCenterX - (drawW / 2);
@@ -1251,7 +1290,32 @@
           loadHeroBatches(1);
         };
 
-        window.addEventListener('resize', resizeHeroCanvas, { passive: true });
+        if (typeof ScrollTrigger !== 'undefined') {
+          ScrollTrigger.create({
+            trigger: heroScrollContainer,
+            start: 'top top',
+            end: 'bottom bottom',
+            scroller: window,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
+            onUpdate: (self) => {
+              heroTargetIndex = Math.min(HERO_TOTAL - 1, Math.floor(self.progress * HERO_TOTAL));
+              if (!isHeroTicking) {
+                requestAnimationFrame(() => {
+                  heroCurrentIndex = heroTargetIndex;
+                  drawHeroFrame(heroCurrentIndex);
+                  isHeroTicking = false;
+                });
+                isHeroTicking = true;
+              }
+            }
+          });
+        }
+
+        window.addEventListener('resize', () => {
+          if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
+          resizeHeroCanvas();
+        }, { passive: true });
         window.addEventListener('scroll', onHeroScroll, { passive: true });
         resizeHeroCanvas();
       }
@@ -1344,16 +1408,34 @@
           }
         }
 
-        function onDragStart(clientX) {
+        let startY = 0;
+        let isHorizontalDrag = false;
+
+        function onDragStart(clientX, clientY) {
           isDragging = true;
           startX = clientX;
+          startY = clientY !== undefined ? clientY : 0;
           startIndex = turntableIndex;
+          isHorizontalDrag = false;
           turntableStage.classList.add('cursor-grabbing');
         }
 
-        function onDragMove(clientX) {
+        function onDragMove(clientX, clientY) {
           if (!isDragging) return;
           const deltaX = clientX - startX;
+          const deltaY = clientY !== undefined ? Math.abs(clientY - startY) : 0;
+
+          if (!isHorizontalDrag && clientY !== undefined) {
+            if (deltaY > 8 && deltaY > Math.abs(deltaX)) {
+              // Detected vertical swipe: release drag immediately to allow natural vertical page scroll
+              onDragEnd();
+              return;
+            }
+            if (Math.abs(deltaX) > 8) {
+              isHorizontalDrag = true;
+            }
+          }
+
           const stageWidth = turntableStage.clientWidth || 500;
           const frameDelta = (deltaX / stageWidth) * TURNTABLE_TOTAL * 1.1;
           setTurntableIndex(startIndex + frameDelta);
@@ -1362,18 +1444,37 @@
         function onDragEnd() {
           if (!isDragging) return;
           isDragging = false;
+          isHorizontalDrag = false;
           turntableStage.classList.remove('cursor-grabbing');
         }
 
-        turntableStage.addEventListener('pointerdown', (e) => onDragStart(e.clientX));
-        window.addEventListener('pointermove', (e) => onDragMove(e.clientX));
+        turntableStage.addEventListener('pointerdown', (e) => {
+          if (e.pointerType === 'touch') return;
+          onDragStart(e.clientX, e.clientY);
+        });
+        window.addEventListener('pointermove', (e) => {
+          if (e.pointerType === 'touch') return;
+          onDragMove(e.clientX, e.clientY);
+        });
         window.addEventListener('pointerup', onDragEnd);
 
-        turntableStage.addEventListener('touchstart', (e) => onDragStart(e.touches[0].clientX), { passive: true });
-        window.addEventListener('touchmove', (e) => onDragMove(e.touches[0].clientX), { passive: true });
-        window.addEventListener('touchend', onDragEnd);
+        turntableStage.addEventListener('touchstart', (e) => {
+          if (e.touches.length === 1) {
+            onDragStart(e.touches[0].clientX, e.touches[0].clientY);
+          }
+        }, { passive: true });
+        window.addEventListener('touchmove', (e) => {
+          if (e.touches.length > 0) {
+            onDragMove(e.touches[0].clientX, e.touches[0].clientY);
+          }
+        }, { passive: true });
+        window.addEventListener('touchend', onDragEnd, { passive: true });
+        window.addEventListener('touchcancel', onDragEnd, { passive: true });
 
-        window.addEventListener('resize', () => drawTurntableFrame(turntableIndex), { passive: true });
+        window.addEventListener('resize', () => {
+          if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
+          drawTurntableFrame(turntableIndex);
+        }, { passive: true });
 
         // Preload frame 47 immediately
         const initialTurntable = new Image();
@@ -1519,8 +1620,33 @@
           }
         }
 
+        if (typeof ScrollTrigger !== 'undefined') {
+          ScrollTrigger.create({
+            trigger: fullarchScrollContainer,
+            start: 'top top',
+            end: 'bottom bottom',
+            scroller: window,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
+            onUpdate: (self) => {
+              targetFullarchIndex = Math.min(FULLARCH_TOTAL - 1, Math.floor(self.progress * FULLARCH_TOTAL));
+              if (!isFullarchTicking) {
+                requestAnimationFrame(() => {
+                  fullarchIndex = targetFullarchIndex;
+                  drawFullarchFrame(fullarchIndex);
+                  isFullarchTicking = false;
+                });
+                isFullarchTicking = true;
+              }
+            }
+          });
+        }
+
         window.addEventListener('scroll', onFullarchScroll, { passive: true });
-        window.addEventListener('resize', () => drawFullarchFrame(fullarchIndex), { passive: true });
+        window.addEventListener('resize', () => {
+          if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
+          drawFullarchFrame(fullarchIndex);
+        }, { passive: true });
 
         const initialFullarch = new Image();
         initialFullarch.src = getFullarchUrl(0);
@@ -1669,8 +1795,34 @@
           }
         }
 
+        if (typeof ScrollTrigger !== 'undefined') {
+          ScrollTrigger.create({
+            trigger: planningScrollContainer,
+            start: 'top top',
+            end: 'bottom bottom',
+            scroller: window,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
+            onUpdate: (self) => {
+              if (prefersReducedMotion) return;
+              targetPlanningIndex = Math.min(PLANNING_TOTAL - 1, Math.floor(self.progress * PLANNING_TOTAL));
+              if (!isPlanningTicking) {
+                requestAnimationFrame(() => {
+                  planningIndex = targetPlanningIndex;
+                  drawPlanningFrame(planningIndex);
+                  isPlanningTicking = false;
+                });
+                isPlanningTicking = true;
+              }
+            }
+          });
+        }
+
         window.addEventListener('scroll', onPlanningScroll, { passive: true });
-        window.addEventListener('resize', () => drawPlanningFrame(planningIndex), { passive: true });
+        window.addEventListener('resize', () => {
+          if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
+          drawPlanningFrame(planningIndex);
+        }, { passive: true });
 
         const initialPlanning = new Image();
         initialPlanning.src = getPlanningUrl(0);
