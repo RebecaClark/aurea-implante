@@ -1,0 +1,17 @@
+{
+  "name": "aurea-implante",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Aurea Implant Architecture - Scroll-driven 3D Frame Animation Website",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "dental",
+    "implant",
+    "scrollytelling",
+    "tailwind"
+  ],
+  "license": "MIT"
+}

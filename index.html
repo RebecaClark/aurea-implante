@@ -1,0 +1,2018 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Aurea Implant Architecture | Alta Arquitetura Cranio-Implantar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;family=Space+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+    .scroll-mt-20 {
+      scroll-margin-top: 5rem;
+    }
+    @layer base {
+      html, body {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        overscroll-behavior: none;
+      }
+      main > :first-child {
+        margin-top: 0 !important;
+      }
+      main > :last-child {
+        margin-bottom: 0 !important;
+      }
+    }
+    ::-webkit-scrollbar {
+      display: none;
+    }
+    #hero-canvas {
+      will-change: transform;
+    }
+
+    /* ---- SOPHISTICATION LAYER: grain, spotlight, tilt, reveal ---- */
+    #grain-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 40;
+      pointer-events: none;
+      opacity: 0.045;
+      mix-blend-mode: overlay;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+    #cursor-spotlight {
+      position: fixed;
+      top: 0; left: 0;
+      width: 560px; height: 560px;
+      border-radius: 9999px;
+      pointer-events: none;
+      z-index: 1;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(circle, rgba(229,203,162,0.07) 0%, rgba(229,203,162,0) 70%);
+      transition: opacity 0.3s ease;
+      opacity: 0;
+    }
+    .tilt-stage {
+      transform-style: preserve-3d;
+      transition: transform 0.15s ease-out;
+      will-change: transform;
+    }
+    .reveal-up {
+      opacity: 0;
+      transform: translateY(36px) scale(0.98);
+      transition: opacity 0.85s cubic-bezier(0.16,1,0.3,1), transform 0.85s cubic-bezier(0.16,1,0.3,1);
+      will-change: opacity, transform;
+    }
+    .reveal-up.is-visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+    .reveal-stagger > * {
+      opacity: 0;
+      transform: translateY(36px) scale(0.98);
+      transition: opacity 0.85s cubic-bezier(0.16,1,0.3,1), transform 0.85s cubic-bezier(0.16,1,0.3,1);
+      will-change: opacity, transform;
+    }
+    .reveal-stagger.is-visible > * {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+    .turntable-drag {
+      cursor: grab;
+      touch-action: none;
+    }
+    .turntable-drag:active {
+      cursor: grabbing;
+    }
+    .magnetic-btn {
+      transition: transform 0.25s cubic-bezier(0.16,1,0.3,1);
+    }
+  </style>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "surface-dim": "#131315",
+            "on-error-container": "#ffdad6",
+            "error": "#ffb4ab",
+            "on-error": "#690005",
+            "on-secondary": "#353026",
+            "surface-container-lowest": "#0e0e10",
+            "primary-fixed-dim": "#dcc39a",
+            "on-surface": "#e5e1e4",
+            "on-secondary-container": "#bdb4a6",
+            "on-primary-fixed": "#261901",
+            "tertiary": "#d0cfc8",
+            "on-background": "#e5e1e4",
+            "outline-variant": "#4c463c",
+            "surface-container-high": "#2a2a2c",
+            "secondary-fixed": "#ebe1d2",
+            "primary": "#e5cba2",
+            "on-surface-variant": "#cfc5b8",
+            "surface-container-low": "#1c1b1e",
+            "inverse-on-surface": "#313032",
+            "on-primary-fixed-variant": "#554425",
+            "primary-container": "#c8b088",
+            "surface-tint": "#dcc39a",
+            "on-secondary-fixed": "#1f1b12",
+            "secondary-container": "#4c463b",
+            "surface-variant": "#353437",
+            "error-container": "#93000a",
+            "surface-container-highest": "#353437",
+            "on-secondary-fixed-variant": "#4c463b",
+            "tertiary-container": "#b5b3ad",
+            "on-tertiary-fixed": "#1b1c18",
+            "primary-fixed": "#f9dfb4",
+            "outline": "#988f83",
+            "surface-container": "#201f22",
+            "on-primary-container": "#544323",
+            "on-primary": "#3d2e10",
+            "tertiary-fixed-dim": "#c8c6c0",
+            "inverse-primary": "#6f5c3a",
+            "tertiary-fixed": "#e4e2db",
+            "secondary": "#cfc5b7",
+            "secondary-fixed-dim": "#cfc5b7",
+            "surface-bright": "#39393b",
+            "on-tertiary-container": "#454541",
+            "background": "#131315",
+            "surface": "#131315",
+            "on-tertiary": "#30312c",
+            "inverse-surface": "#e5e1e4",
+            "on-tertiary-fixed-variant": "#474742"
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          spacing: {
+            "space-2xs": "0.25rem",
+            "margin-mobile": "1.5rem",
+            "space-xl": "2.5rem",
+            "space-3xl": "6rem",
+            "space-lg": "1.5rem",
+            "gutter-mobile": "1rem",
+            "margin-desktop": "5rem",
+            "space-md": "1rem",
+            "space-xs": "0.5rem",
+            "space-4xl": "10rem",
+            "space-2xl": "4rem",
+            "space-sm": "0.75rem",
+            "gutter-desktop": "2rem"
+          },
+          fontFamily: {
+            "label-coordinate": ["Space Grotesk"],
+            "body-md": ["Plus Jakarta Sans"],
+            "headline-sm": ["EB Garamond"],
+            "caption": ["Plus Jakarta Sans"],
+            "display-xl-mobile": ["EB Garamond"],
+            "headline-md": ["EB Garamond"],
+            "display-xl": ["EB Garamond"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "headline-lg-mobile": ["EB Garamond"],
+            "label-technical": ["Space Grotesk"],
+            "headline-lg": ["EB Garamond"],
+            "body-sm": ["Plus Jakarta Sans"]
+          },
+          fontSize: {
+            "label-coordinate": ["9px", { lineHeight: "12px", letterSpacing: "0.22em", fontWeight: "600" }],
+            "body-md": ["15px", { lineHeight: "26px", letterSpacing: "0em", fontWeight: "400" }],
+            "headline-sm": ["24px", { lineHeight: "32px", letterSpacing: "0em", fontWeight: "400" }],
+            "caption": ["12px", { lineHeight: "18px", letterSpacing: "0.02em", fontWeight: "400" }],
+            "display-xl-mobile": ["44px", { lineHeight: "52px", letterSpacing: "-0.02em", fontWeight: "400" }],
+            "headline-md": ["32px", { lineHeight: "40px", letterSpacing: "-0.01em", fontWeight: "400" }],
+            "display-xl": ["80px", { lineHeight: "88px", letterSpacing: "-0.03em", fontWeight: "400" }],
+            "body-lg": ["18px", { lineHeight: "30px", letterSpacing: "-0.01em", fontWeight: "300" }],
+            "headline-lg-mobile": ["32px", { lineHeight: "40px", letterSpacing: "-0.01em", fontWeight: "400" }],
+            "label-technical": ["11px", { lineHeight: "14px", letterSpacing: "0.14em", fontWeight: "500" }],
+            "headline-lg": ["48px", { lineHeight: "56px", letterSpacing: "-0.02em", fontWeight: "400" }],
+            "body-sm": ["13px", { lineHeight: "22px", letterSpacing: "0.01em", fontWeight: "400" }]
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-surface text-on-surface antialiased selection:bg-primary selection:text-on-primary">
+  <!-- Premium texture + cursor-reactive spotlight (adds tactile depth site-wide) -->
+  <div id="grain-overlay"></div>
+  <div id="cursor-spotlight"></div>
+
+  <!-- Top Navigation Header -->
+  <header class="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest/80 backdrop-blur-xl border-b border-outline-variant/30">
+    <div class="h-20 w-full max-w-[1680px] mx-auto px-margin-mobile lg:px-margin-desktop flex items-center justify-between gap-space-md">
+      <div class="flex items-center gap-space-md">
+        <a class="flex items-center gap-space-sm group" data-path="philosophy" href="#philosophy">
+          <img alt="Aurea Surgical Architecture Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1VNe0JHsp-juwN57p_LTbfIoYFzHqoPvT1Ue39RObUsvNs4liPCVTtIN22xR9oCv-fPJQoTCqnitbBBQORcs6Ow0Vmybcjcfsi3hYX8X6aBNW_q-s0x3lM217UNOn6Bz9hRCHANpoxIX62JaNP-JsaKz5zThpM7Y1yKtpAQU2HvKHUOkaXsrCBuaN2QkKL1vCQ12LwA7bbbHBnf6NudOVlsUxUYau-0Wi3yBZytZJh6CrJVupc6fTUcdgs"/>
+          <div class="flex flex-col">
+            <span class="font-headline-sm text-headline-sm tracking-tight text-on-surface uppercase">Aurea</span>
+            <span class="font-label-coordinate text-label-coordinate text-primary uppercase">Implant Architecture</span>
+          </div>
+        </a>
+      </div>
+      <nav class="hidden xl:flex items-center gap-space-lg" data-active-classes="text-primary border-b border-primary">
+        <a aria-current="page" class="font-label-technical uppercase tracking-widest py-space-xs transition-colors duration-150 text-primary border-b border-primary" data-path="philosophy" href="#philosophy">Filosofia</a>
+        <a class="font-label-technical text-label-technical uppercase tracking-widest text-on-surface-variant hover:text-on-surface py-space-xs transition-colors duration-150" data-path="engineering" href="#engineering">Engenharia</a>
+        <a class="font-label-technical text-label-technical uppercase tracking-widest text-on-surface-variant hover:text-on-surface py-space-xs transition-colors duration-150" data-path="treatments" href="#treatments">Tratamentos</a>
+        <a class="font-label-technical text-label-technical uppercase tracking-widest text-on-surface-variant hover:text-on-surface py-space-xs transition-colors duration-150" data-path="protocol" href="#protocol">Protocolo</a>
+        <a class="font-label-technical text-label-technical uppercase tracking-widest text-on-surface-variant hover:text-on-surface py-space-xs transition-colors duration-150" data-path="clinic" href="#clinic">Clínica</a>
+        <a class="font-label-technical text-label-technical uppercase tracking-widest text-on-surface-variant hover:text-on-surface py-space-xs transition-colors duration-150" data-path="leadership" href="#leadership">Corpo Clínico</a>
+      </nav>
+      <div class="flex items-center gap-space-lg">
+        <div class="hidden 2xl:flex flex-col items-end border-r border-outline-variant/30 pr-space-lg">
+          <div class="flex items-center gap-space-2xs">
+            <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+            <span class="font-label-coordinate text-label-coordinate text-primary uppercase">Capacidade Clínica: Concierge Exclusivo</span>
+          </div>
+          <span class="font-label-technical text-label-technical text-on-surface-variant tracking-wider">+41 (0)44 218 9000</span>
+        </div>
+        <a class="hidden sm:inline-flex items-center justify-center border border-primary-container px-space-md py-space-xs font-label-technical text-label-technical tracking-widest text-primary-container bg-surface-container-lowest hover:bg-primary-container hover:text-on-primary transition-colors duration-150 uppercase" data-path="evaluation" href="#evaluation">Agendar Avaliação</a>
+        <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0">
+          <span class="material-symbols-outlined text-on-primary text-[18px]">person</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="w-full bg-surface">
+    <div class="flex flex-col w-full text-on-surface">
+
+      <!-- 1. SCROLL-DRIVEN FRAME ANIMATION HERO (3D STICKY/PINNED STAGE) -->
+      <section id="hero-scroll-container" class="relative w-full h-[280vh] bg-surface">
+        <!-- Pinned Sticky Stage (100vh) -->
+        <div id="hero-sticky-viewport" class="sticky top-0 w-full h-screen min-h-[640px] flex flex-col justify-between overflow-hidden px-margin-mobile lg:px-margin-desktop pt-24 pb-space-lg">
+          
+          <!-- Fullscreen Hero Canvas Backdrop -->
+          <div class="absolute inset-0 z-0 pointer-events-none overflow-hidden flex items-center justify-center">
+            <canvas id="hero-canvas" class="w-full h-full block"></canvas>
+            <!-- Vignette Gradients for Luxury Dark Integration -->
+            <div class="absolute inset-0 pointer-events-none bg-gradient-to-r from-surface/90 via-surface/30 to-transparent w-full lg:w-3/5"></div>
+            <div class="absolute inset-0 pointer-events-none bg-gradient-to-b from-surface/70 via-transparent to-surface/90"></div>
+          </div>
+
+          <!-- Ambient Luminous Radiance -->
+          <div class="pointer-events-none absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[680px] h-[680px] bg-primary/5 rounded-full blur-[140px]"></div>
+
+          <!-- Top Technical Coordinate Ledger -->
+          <div class="relative z-10 flex flex-wrap items-center justify-between gap-y-space-xs text-on-surface-variant pt-space-xs pointer-events-auto">
+            <div class="flex items-center gap-space-sm font-label-coordinate text-label-coordinate tracking-widest text-primary uppercase">
+              <span class="w-1.5 h-1.5 rounded-full bg-primary animate-ping"></span>
+              <span>SUÍTE CIRÚRGICA AUREA // CH-8001 ZURIQUE</span>
+            </div>
+            <div class="hidden md:flex items-center gap-space-lg font-label-technical text-label-technical tracking-wider text-outline">
+              <span>INTERFACE: CONE MORSE CÔNICO</span>
+              <span>•</span>
+              <span>CALIBRAÇÃO: TOLERÂNCIA DE ±0.005mm</span>
+            </div>
+          </div>
+
+          <!-- Centerpiece Stage: Split Typography & 3D Telemetry Overlay -->
+          <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-space-xl items-center my-auto py-space-md">
+            <!-- Left Column: Copy & CTAs -->
+            <div class="lg:col-span-6 flex flex-col space-y-space-md pointer-events-auto">
+              <div class="inline-flex items-center gap-space-xs font-label-technical text-label-technical tracking-widest text-primary uppercase">
+                <span>ARQUITETURAS CRANIANAS OSSEOINTEGRADAS</span>
+              </div>
+              <h1 class="font-display-xl text-display-xl tracking-tight text-on-surface leading-none">
+                RECONSTRUA COM <span class="italic text-primary">PRECISÃO.</span>
+              </h1>
+              <p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl font-light">
+                Implantodontia avançada projetada com precisão micrométrica, planejamento biomecânico esquelético e longevidade celular.
+              </p>
+              <!-- CTA Cluster -->
+              <div class="pt-space-sm flex flex-wrap items-center gap-space-md">
+                <a class="inline-flex items-center justify-center px-space-lg py-space-sm bg-primary text-on-primary font-label-technical text-label-technical uppercase tracking-widest transition-all duration-200 hover:bg-primary-fixed shadow-md shadow-primary/10" data-path="evaluation" href="#evaluation">
+                  Agendar uma avaliação
+                </a>
+                <a class="inline-flex items-center gap-space-xs font-label-technical text-label-technical uppercase tracking-widest text-on-surface hover:text-primary transition-colors duration-150 py-space-sm" href="#anatomical-assembly">
+                  <span>Explorar implantodontia</span>
+                  <span class="material-symbols-outlined text-[16px]">arrow_downward</span>
+                </a>
+              </div>
+            </div>
+
+            <!-- Right Column: 3D Stage Visualizer HUD Telemetry Overlay -->
+            <div class="lg:col-span-6 relative flex justify-center items-center pointer-events-none">
+              <div id="hud-stage-frame" class="tilt-stage relative w-full max-w-lg aspect-[4/5] rounded-xl border border-outline-variant/30 bg-surface-container-lowest/15 backdrop-blur-[1px] shadow-2xl flex items-center justify-center p-space-md transition-all duration-300">
+                <!-- Overlaid HUD Telemetry Markers -->
+                <div class="absolute top-space-md left-space-md bg-surface-container-lowest/90 px-space-xs py-space-2xs rounded text-primary font-label-coordinate text-label-coordinate border border-outline-variant/20 flex items-center gap-1.5 shadow-sm">
+                  <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+                  <span>EIXO DE ROTAÇÃO X/Y // PLATAFORMA 3D</span>
+                </div>
+                <div class="absolute top-space-md right-space-md bg-surface-container-lowest/90 px-space-xs py-space-2xs rounded text-on-surface font-label-coordinate text-label-coordinate border border-outline-variant/20 shadow-sm">
+                  ZIRCÔNIA + TITÂNIO GRAU 5
+                </div>
+                
+                <!-- Live Scrub Telemetry Progress Indicator -->
+                <div class="absolute top-1/2 -translate-y-1/2 right-space-md flex flex-col items-end gap-1.5 font-label-coordinate text-label-coordinate text-outline bg-surface-container-lowest/80 px-space-xs py-space-xs rounded border border-outline-variant/20 backdrop-blur-sm shadow-md">
+                  <div class="flex items-center gap-1">
+                    <span class="text-primary font-bold tracking-widest text-[10px]" id="hud-frame-indicator">FRAME 001/096</span>
+                  </div>
+                  <div class="w-16 h-1 bg-surface-container-high rounded-full overflow-hidden">
+                    <div id="hud-scroll-bar" class="h-full bg-primary transition-all duration-75" style="width: 1%;"></div>
+                  </div>
+                  <span class="text-[8px] uppercase tracking-wider text-outline-variant">ROLE PARA EXPLODIR A ESTRUTURA</span>
+                </div>
+
+                <!-- Bottom Telemetry HUD Marker -->
+                <div class="absolute bottom-space-md left-space-md right-space-md flex items-center justify-between bg-surface-container-lowest/95 backdrop-blur-md px-space-md py-space-xs rounded border border-outline-variant/20 shadow-md">
+                  <span class="font-label-technical text-label-technical text-outline">TOLERÂNCIA MICROMÉTRICA</span>
+                  <span class="font-label-technical text-label-technical text-primary font-bold">±0.005mm</span>
+                  <span class="font-label-coordinate text-label-coordinate text-secondary">VALIDADO PELA ISO 5832-3</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hero Bottom Telemetry Bar -->
+          <div class="relative z-10 grid grid-cols-1 sm:grid-cols-3 gap-space-md pt-space-md bg-surface-container-low/60 rounded-lg px-space-md py-space-sm backdrop-blur-sm pointer-events-auto">
+            <div class="flex items-center gap-space-sm">
+              <span class="material-symbols-outlined text-primary text-[22px]">verified</span>
+              <div class="flex flex-col">
+                <span class="font-label-technical text-label-technical text-on-surface uppercase">Taxa de Sucesso Cirúrgico</span>
+                <span class="font-label-coordinate text-label-coordinate text-primary font-bold"><span class="js-counter" data-count-to="99.4" data-decimals="1">0</span>% CLINICAL EFFICACY (10-YR)</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-space-sm">
+              <span class="material-symbols-outlined text-primary text-[22px]">precision_manufacturing</span>
+              <div class="flex flex-col">
+                <span class="font-label-technical text-label-technical text-on-surface uppercase">Robótica Dinâmica</span>
+                <span class="font-label-coordinate text-label-coordinate text-on-surface-variant font-medium">RASTREAMENTO ÓPTICO EM TEMPO REAL</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-space-sm">
+              <span class="material-symbols-outlined text-primary text-[22px]">domain</span>
+              <div class="flex flex-col">
+                <span class="font-label-technical text-label-technical text-on-surface uppercase">Centros Cirúrgicos</span>
+                <span class="font-label-coordinate text-label-coordinate text-on-surface-variant font-medium">SUÍTES PRIVADAS EM ZURIQUE E TÓQUIO</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. MANIFESTO SECTION -->
+      <section id="philosophy" class="w-full px-margin-mobile lg:px-margin-desktop py-space-4xl bg-surface-container-lowest relative z-10 scroll-mt-20">
+        <div class="max-w-[1680px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-space-2xl items-start">
+          <div class="lg:col-span-4 flex flex-col space-y-space-sm reveal-up">
+            <span class="font-label-technical text-label-technical tracking-widest text-primary uppercase">01 / FILOSOFIA</span>
+            <h2 class="font-headline-lg text-headline-lg text-on-surface">
+              Um implante é mais do que uma substituição.
+            </h2>
+            <p class="font-body-md text-body-md text-on-surface-variant pt-space-xs">
+              A odontologia convencional enxerga o edentulismo como um vazio mecânico isolado. Na Aurea, compreendemos o sistema estomatognático como uma intricada rede de tensegridade, onde forças mastigatórias, equilíbrio craniano e saúde óssea microvascular coexistem em absoluta interdependência.
+            </p>
+          </div>
+          <div class="lg:col-span-8 grid grid-cols-1 sm:grid-cols-3 gap-space-lg reveal-stagger">
+            <div class="bg-surface-container-low p-space-lg rounded-lg flex flex-col justify-between space-y-space-md shadow-sm">
+              <div class="flex items-center justify-between">
+                <span class="font-label-coordinate text-label-coordinate text-primary uppercase">CRITÉRIO 01</span>
+                <span class="material-symbols-outlined text-outline text-[20px]">architecture</span>
+              </div>
+              <div class="space-y-space-xs">
+                <h3 class="font-headline-sm text-headline-sm text-on-surface">Matriz de Titânio Biocompatível</h3>
+                <p class="font-body-sm text-body-sm text-on-surface-variant">Liga de titânio graus 4 e 5, trabalhada a frio para máxima resistência ao escoamento, eliminando o cisalhamento de partículas na crista marginal.</p>
+              </div>
+              <div class="pt-space-xs font-label-technical text-label-technical text-outline uppercase">Perfil de Adesão Osteoblástica</div>
+            </div>
+            <div class="bg-surface-container-low p-space-lg rounded-lg flex flex-col justify-between space-y-space-md shadow-sm">
+              <div class="flex items-center justify-between">
+                <span class="font-label-coordinate text-label-coordinate text-primary uppercase">CRITÉRIO 02</span>
+                <span class="material-symbols-outlined text-outline text-[20px]">csv</span>
+              </div>
+              <div class="space-y-space-xs">
+                <h3 class="font-headline-sm text-headline-sm text-on-surface">Densidade Óssea Submilimétrica</h3>
+                <p class="font-body-sm text-body-sm text-on-surface-variant">Mapeamento tridimensional de densidade óssea em unidades Hounsfield, calibrando a osteotomia cirúrgica às proporções córtico-trabeculares.</p>
+              </div>
+              <div class="pt-space-xs font-label-technical text-label-technical text-outline uppercase">Análise Volumétrica CBCT</div>
+            </div>
+            <div class="bg-surface-container-low p-space-lg rounded-lg flex flex-col justify-between space-y-space-md shadow-sm">
+              <div class="flex items-center justify-between">
+                <span class="font-label-coordinate text-label-coordinate text-primary uppercase">CRITÉRIO 03</span>
+                <span class="material-symbols-outlined text-outline text-[20px]">cyclone</span>
+              </div>
+              <div class="space-y-space-xs">
+                <h3 class="font-headline-sm text-headline-sm text-on-surface">Estabilidade Biomecânica Perene</h3>
+                <p class="font-body-sm text-body-sm text-on-surface-variant">Vedamento cônico interno que erradica microfendas, resistindo a cargas mastigatórias de até 600N sem infiltração bacteriana peri-implantar.</p>
+              </div>
+              <div class="pt-space-xs font-label-technical text-label-technical text-outline uppercase">Conexão Hermética Cone Morse</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. IMMERSIVE 3D SECTION (ANATOMICAL ASSEMBLY BREAKDOWN) -->
+      <section id="anatomical-assembly" class="w-full px-margin-mobile lg:px-margin-desktop py-space-4xl bg-surface relative z-10 scroll-mt-20">
+        <div class="max-w-[1680px] mx-auto flex flex-col space-y-space-2xl">
+          <div class="flex flex-col md:flex-row md:items-end justify-between gap-space-md reveal-up">
+            <div>
+              <span class="font-label-technical text-label-technical tracking-widest text-primary uppercase">DISSECÇÃO CIRÚRGICA</span>
+              <h2 class="font-headline-lg text-headline-lg text-on-surface mt-space-2xs">Dissecção Anatômica dos Componentes</h2>
+            </div>
+            <div class="flex items-center gap-space-sm font-label-coordinate text-label-coordinate text-outline">
+              <span class="px-space-xs py-space-2xs bg-surface-container rounded">HEXÁGONO CÔNICO INTERNO</span>
+              <span class="px-space-xs py-space-2xs bg-surface-container rounded text-primary">TORQUE DE INSERÇÃO: 35 Ncm</span>
+            </div>
+          </div>
+
+          <!-- Exploded Diagram + Interactive Selector -->
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-space-xl items-center">
+            <!-- Visual Assembly Glass Frame -->
+            <div class="lg:col-span-7 relative w-full aspect-square md:aspect-[16/10] bg-surface-container-lowest rounded-xl overflow-hidden shadow-2xl flex items-center justify-center p-space-md reveal-up select-none cursor-grab active:cursor-grabbing border border-outline-variant/30" id="turntableStage">
+              <!-- Real 96-Frame Interactive Canvas Turntable (Task A) -->
+              <canvas id="turntableCanvas" class="w-full h-full block object-contain"></canvas>
+              
+              <!-- HUD Overlays -->
+              <div class="absolute bottom-space-md left-space-md bg-surface-container-lowest/90 backdrop-blur-md px-space-sm py-space-xs rounded font-label-coordinate text-label-coordinate text-on-surface-variant border border-outline-variant/20 flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+                <span>ESCANEAMENTO ATIVO // TURNTABLE 3D REAL</span>
+              </div>
+              <div class="absolute top-space-md right-space-md bg-surface-container-lowest/90 backdrop-blur-md px-space-sm py-space-xs rounded font-label-coordinate text-label-coordinate text-primary border border-outline-variant/20 flex items-center gap-space-2xs">
+                <span class="material-symbols-outlined text-[14px]">drag_pan</span>
+                <span>ARRASTE PARA GIRAR (±35°)</span>
+                <span id="turntableDeg" class="text-on-surface font-bold text-primary pl-1">0°</span>
+              </div>
+              <div class="absolute bottom-space-md right-space-md bg-surface-container-lowest/90 backdrop-blur-md px-space-sm py-space-xs rounded font-label-coordinate text-label-coordinate text-outline border border-outline-variant/20">
+                <span id="turntableFrameIndicator">FRAME 048/096</span>
+              </div>
+            </div>
+            <!-- Layer Interactive Tabs -->
+            <div class="lg:col-span-5 flex flex-col space-y-space-sm reveal-stagger" id="layerSelectorContainer">
+              <div class="p-space-md bg-surface-container-high rounded-lg cursor-pointer transition-all duration-200 layer-item active shadow-md" data-layer="0">
+                <div class="flex items-center justify-between mb-space-2xs">
+                  <span class="font-label-technical text-label-technical text-primary">CAMADA 01</span>
+                  <span class="font-label-coordinate text-label-coordinate text-outline">TRANSLUCIDEZ: 49%</span>
+                </div>
+                <h3 class="font-headline-sm text-headline-sm text-on-surface">Coroa em Zircônia Monolítica</h3>
+                <p class="font-body-sm text-body-sm text-on-surface-variant mt-space-2xs">
+                  Zircônia estabilizada por ítria multicamadas, fresada para reproduzir o índice de refração, a opalescência incisal e o croma dentinário do esmalte natural.
+                </p>
+              </div>
+              <div class="p-space-md bg-surface-container-low hover:bg-surface-container rounded-lg cursor-pointer transition-all duration-200 layer-item" data-layer="1">
+                <div class="flex items-center justify-between mb-space-2xs">
+                  <span class="font-label-technical text-label-technical text-primary">CAMADA 02</span>
+                  <span class="font-label-coordinate text-label-coordinate text-outline">CAD/CAM 5 EIXOS</span>
+                </div>
+                <h3 class="font-headline-sm text-headline-sm text-on-surface">Pilar Protético Personalizado Microfresado</h3>
+                <p class="font-body-sm text-body-sm text-on-surface-variant mt-space-2xs">
+                  Colar transmucoso de conformação anatômica, fresado individualmente para sustentar as papilas biológicas sem causar isquemia tecidual.
+                </p>
+              </div>
+              <div class="p-space-md bg-surface-container-low hover:bg-surface-container rounded-lg cursor-pointer transition-all duration-200 layer-item" data-layer="2">
+                <div class="flex items-center justify-between mb-space-2xs">
+                  <span class="font-label-technical text-label-technical text-primary">CAMADA 03</span>
+                  <span class="font-label-coordinate text-label-coordinate text-outline">SUPERFÍCIE ATIVA SLA</span>
+                </div>
+                <h3 class="font-headline-sm text-headline-sm text-on-surface">Implante de Fixação em Titânio SLA Ativo</h3>
+                <p class="font-body-sm text-body-sm text-on-surface-variant mt-space-2xs">
+                  Titânio grau 4 nanoestruturado com jateamento e ataque ácido, oferecendo hidrofilia imediata para acelerar a coagulação e a osteogênese celular.
+                </p>
+              </div>
+              <div class="p-space-md bg-surface-container-low hover:bg-surface-container rounded-lg cursor-pointer transition-all duration-200 layer-item" data-layer="3">
+                <div class="flex items-center justify-between mb-space-2xs">
+                  <span class="font-label-technical text-label-technical text-primary">CAMADA 04</span>
+                  <span class="font-label-coordinate text-label-coordinate text-outline">REDUÇÃO DE TENSÃO FEA</span>
+                </div>
+                <h3 class="font-headline-sm text-headline-sm text-on-surface">Arquitetura Óssea Trabecular</h3>
+                <p class="font-body-sm text-body-sm text-on-surface-variant mt-space-2xs">
+                  Microrranhuras calculadas no colar do implante convertem tensões de cisalhamento em cargas compressivas, blindando a crista óssea contra reabsorções.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. TREATMENTS (FOUR LUXURY EDITORIAL CARDS) -->
+      <section id="treatments" class="w-full px-margin-mobile lg:px-margin-desktop py-space-4xl bg-surface-container-lowest relative z-10 scroll-mt-20">
+        <div class="max-w-[1680px] mx-auto flex flex-col space-y-space-2xl">
+          <div class="flex flex-col space-y-space-2xs reveal-up">
+            <span class="font-label-technical text-label-technical tracking-widest text-primary uppercase">02 / ESPECIALIZAÇÃO CLÍNICA</span>
+            <h2 class="font-headline-lg text-headline-lg text-on-surface">Abordagens Restauradoras</h2>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-space-lg reveal-stagger">
+            <!-- Treatment Card 1 -->
+            <div class="bg-surface-container-low hover:bg-surface-container transition-all duration-300 p-space-lg rounded-xl flex flex-col justify-between space-y-space-xl shadow-lg">
+              <div class="space-y-space-md">
+                <div class="flex items-center justify-between">
+                  <span class="font-label-coordinate text-label-coordinate text-primary uppercase">PROTOCOLO 01</span>
+                  <span class="material-symbols-outlined text-outline text-[20px]">dentistry</span>
+                </div>
+                <h3 class="font-headline-md text-headline-md text-on-surface">Implantes Unitários e Múltiplos</h3>
+                <p class="font-body-sm text-body-sm text-on-surface-variant">
+                  Substituição radicular unitária e múltipla. Osteotomia guiada digital de alta precisão com prótese provisória funcional instalada no mesmo dia.
+                </p>
+              </div>
+              <div class="pt-space-md bg-surface-container-lowest/50 p-space-xs rounded font-label-coordinate text-label-coordinate text-outline flex items-center justify-between">
+                <span>1–2 SESSÕES</span>
+                <span class="text-primary font-bold">GARANTIA VITALÍCIA</span>
+              </div>
+            </div>
+            <!-- Treatment Card 2 -->
+            <div class="bg-surface-container-low hover:bg-surface-container transition-all duration-300 p-space-lg rounded-xl flex flex-col justify-between space-y-space-xl shadow-lg">
+              <div class="space-y-space-md">
+                <div class="flex items-center justify-between">
+                  <span class="font-label-coordinate text-label-coordinate text-primary uppercase">PROTOCOLO 02</span>
+                  <span class="material-symbols-outlined text-outline text-[20px]">view_agenda</span>
+                </div>
+                <h3 class="font-headline-md text-headline-md text-on-surface">Reabilitação de Arco Total</h3>
+                <p class="font-body-sm text-body-sm text-on-surface-variant">
+                  Restauração maxilar ou mandibular completa com 4 a 6 implantes angulados de alta engenharia e protocolo estrutural em zircônia sobre barra de titânio.
+                </p>
+              </div>
+              <div class="pt-space-md bg-surface-container-lowest/50 p-space-xs rounded font-label-coordinate text-label-coordinate text-outline flex items-center justify-between">
+                <span>CARGA IMEDIATA</span>
+                <span class="text-primary font-bold">ALTA ESTRUTURA</span>
+              </div>
+            </div>
+            <!-- Treatment Card 3 -->
+            <div class="bg-surface-container-low hover:bg-surface-container transition-all duration-300 p-space-lg rounded-xl flex flex-col justify-between space-y-space-xl shadow-lg">
+              <div class="space-y-space-md">
+                <div class="flex items-center justify-between">
+                  <span class="font-label-coordinate text-label-coordinate text-primary uppercase">PROTOCOLO 03</span>
+                  <span class="material-symbols-outlined text-outline text-[20px]">health_and_safety</span>
+                </div>
+                <h3 class="font-headline-md text-headline-md text-on-surface">Reabilitação Oral Complexa</h3>
+                <p class="font-body-sm text-body-sm text-on-surface-variant">
+                  Reconstruções cirúrgicas complexas para atrofia óssea severa via enxertos ósseos autógenos, levantamento de seio maxilar e implantes zigomáticos.
+                </p>
+              </div>
+              <div class="pt-space-md bg-surface-container-lowest/50 p-space-xs rounded font-label-coordinate text-label-coordinate text-outline flex items-center justify-between">
+                <span>PROTOCOLO EM ETAPAS</span>
+                <span class="text-primary font-bold">CIRURGIA CRANIOFACIAL</span>
+              </div>
+            </div>
+            <!-- Treatment Card 4 -->
+            <div class="bg-surface-container-low hover:bg-surface-container transition-all duration-300 p-space-lg rounded-xl flex flex-col justify-between space-y-space-xl shadow-lg">
+              <div class="space-y-space-md">
+                <div class="flex items-center justify-between">
+                  <span class="font-label-coordinate text-label-coordinate text-primary uppercase">PROTOCOLO 04</span>
+                  <span class="material-symbols-outlined text-outline text-[20px]">auto_awesome</span>
+                </div>
+                <h3 class="font-headline-md text-headline-md text-on-surface">Estética do Sorriso</h3>
+                <p class="font-body-sm text-body-sm text-on-surface-variant">
+                  Facetas laminadas em cerâmica ultrafina, plástica gengival a laser e calibração pela proporção áurea adaptada à dinâmica labial do paciente.
+                </p>
+              </div>
+              <div class="pt-space-md bg-surface-container-lowest/50 p-space-xs rounded font-label-coordinate text-label-coordinate text-outline flex items-center justify-between">
+                <span>CERÂMICAS MICROMÉTRICAS</span>
+                <span class="text-primary font-bold">COR PERSONALIZADA</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- 4B. TASK B: FULL-ARCH SKELETAL RECONSTRUCTION (SCROLL SEQUENCE) -->
+      <section id="fullarch-scroll-container" class="relative w-full h-[260vh] bg-surface-container-lowest relative z-10">
+        <div id="fullarch-sticky-viewport" class="sticky top-0 w-full h-screen min-h-[640px] flex flex-col justify-between overflow-hidden px-margin-mobile lg:px-margin-desktop pt-24 pb-space-lg relative">
+          
+          <!-- Full-Arch Canvas Background (Protected Layer 2) -->
+          <div class="absolute inset-0 z-0 pointer-events-none overflow-hidden flex items-center justify-center">
+            <canvas id="fullarchCanvas" class="w-full h-full block"></canvas>
+            <div class="absolute inset-0 pointer-events-none bg-gradient-to-r from-surface-container-lowest/95 via-surface-container-lowest/30 to-transparent w-full lg:w-3/5"></div>
+            <div class="absolute inset-0 pointer-events-none bg-gradient-to-b from-surface-container-lowest/80 via-transparent to-surface-container-lowest/90"></div>
+          </div>
+
+          <!-- Top Technical Coordinate Ledger -->
+          <div class="relative z-10 flex flex-wrap items-center justify-between gap-y-space-xs text-on-surface-variant pt-space-xs pointer-events-auto">
+            <div class="flex items-center gap-space-sm font-label-coordinate text-label-coordinate tracking-widest text-primary uppercase">
+              <span class="w-1.5 h-1.5 rounded-full bg-primary animate-ping"></span>
+              <span>PROTOCOLO 02-B // RECONSTRUÇÃO ESQUELÉTICA DE ARCO TOTAL</span>
+            </div>
+            <div class="hidden md:flex items-center gap-space-lg font-label-technical text-label-technical tracking-wider text-outline">
+              <span>GEOMETRIA ESTEREOLITOGRÁFICA ALL-ON-4 / ALL-ON-6</span>
+              <span>•</span>
+              <span>ANGULAÇÃO: 17° E 30° COM INTERFACE CONE MORSE</span>
+            </div>
+          </div>
+
+          <!-- Centerpiece Stage: Responsive Narrative & Protected 3D Zone -->
+          <div class="relative z-10 grid grid-cols-1 md:grid-cols-12 gap-y-space-sm md:gap-space-xl items-center my-auto py-space-2xs md:py-space-md">
+            <!-- Left Column on Desktop / Title & Content on Mobile -->
+            <div class="md:col-span-5 xl:col-span-4 flex flex-col space-y-space-xs md:space-y-space-md pointer-events-auto max-w-md">
+              <div class="inline-flex items-center gap-space-xs font-label-technical text-label-technical tracking-widest text-primary uppercase">
+                <span>SEQUÊNCIA INTERATIVA DE ROLAGEM</span>
+              </div>
+              <h2 class="font-headline-md lg:font-headline-lg text-headline-md lg:text-headline-lg text-on-surface leading-tight">
+                Ponte Estrutural de <span class="italic text-primary">Arco Total.</span>
+              </h2>
+              
+              <!-- Mobile Safe Visual Zone Spacer (Canvas between Title and Description) -->
+              <div class="h-[36vh] sm:h-[40vh] md:hidden pointer-events-none" aria-hidden="true"></div>
+
+              <!-- Descriptive narrative & Biomechanical specs (below 3D visual on mobile) -->
+              <p class="font-body-sm lg:font-body-lg text-body-sm lg:text-body-lg text-on-surface-variant font-light leading-relaxed">
+                Role para acompanhar a sequência de acoplamento protético em tempo real. Uma superestrutura monolítica de zircônia e titânio assentada com precisão submicrométrica sobre implantes multi-unit osseointegrados.
+              </p>
+              <div class="grid grid-cols-2 gap-space-xs sm:gap-space-sm pt-space-xs">
+                <div class="bg-surface-container-low/80 p-space-xs sm:p-space-sm rounded border-l-2 border-primary">
+                  <span class="font-label-coordinate text-label-coordinate text-outline block uppercase text-[8px] sm:text-[9px]">BIOMECÂNICA</span>
+                  <span class="font-label-technical text-label-technical text-on-surface font-semibold text-[10px] sm:text-[11px]">1.200 MPa de Resistência</span>
+                </div>
+                <div class="bg-surface-container-low/80 p-space-xs sm:p-space-sm rounded border-l-2 border-primary">
+                  <span class="font-label-coordinate text-label-coordinate text-outline block uppercase text-[8px] sm:text-[9px]">ASSENTAMENTO PASSIVO</span>
+                  <span class="font-label-technical text-label-technical text-on-surface font-semibold text-[10px] sm:text-[11px]">&lt; 8μm de Margem</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Center / Right: Open protected space for 3D visual on desktop/tablet -->
+            <div class="hidden md:block md:col-span-7 xl:col-span-8 pointer-events-none"></div>
+          </div>
+
+          <!-- Repositioned Technical HUD (Far Bottom-Right Edge on Desktop, Normal Flow Element on Mobile) -->
+          <div class="relative md:absolute md:bottom-14 md:right-margin-desktop z-20 pointer-events-auto flex justify-end mt-2 md:mt-0">
+            <div class="bg-surface-container-lowest/90 backdrop-blur-md p-space-xs sm:p-space-sm rounded-xl border border-outline-variant/30 shadow-2xl space-y-space-xs w-full sm:max-w-xs md:w-[320px]">
+              <div class="flex items-center justify-between gap-2 text-primary font-label-coordinate text-label-coordinate text-[9px] sm:text-[10px]">
+                <span class="flex items-center gap-1.5 shrink-0">
+                  <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+                  <span>HUD DE ANÁLISE PROTÉTICA</span>
+                </span>
+                <span id="fullarchFrameIndicator" class="font-bold tracking-widest text-primary shrink-0">FRAME 001/096</span>
+              </div>
+              <div class="w-full h-1 bg-surface-container-high rounded-full overflow-hidden">
+                <div id="fullarchScrollBar" class="h-full bg-primary transition-all duration-75" style="width: 1%;"></div>
+              </div>
+              <div class="space-y-0.5 pt-0.5">
+                <div class="flex justify-between items-center font-label-technical text-label-technical text-outline text-[9px] sm:text-[10px]">
+                  <span>FASE DE MONTAGEM:</span>
+                  <span id="fullarchPhaseBadge" class="text-primary font-semibold truncate ml-1">01 / MAPEAMENTO DOS PILARES</span>
+                </div>
+                <p id="fullarchPhaseDesc" class="font-body-sm text-body-sm text-on-surface-variant text-[11px] leading-snug">
+                  Mapeamento tomográfico da densidade óssea mandibular com quatro pilares protéticos em titânio pré-calibrados para carga imediata.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Telemetry Bar -->
+          <div class="relative z-10 flex flex-wrap items-center justify-between gap-space-sm pt-space-xs sm:pt-space-md border-t border-outline-variant/20 font-label-coordinate text-label-coordinate text-outline pointer-events-auto">
+            <span class="truncate text-[9px] sm:text-[10px]">MONOBLOCO DE ZIRCÔNIA // SUBESTRUTURA EM BARRA DE TITÂNIO GRAU 5</span>
+            <span class="text-primary flex items-center gap-1 shrink-0 text-[9px] sm:text-[10px]">
+              <span class="material-symbols-outlined text-[14px]">south</span>
+              <span class="hidden sm:inline">ROLE PARA ACIONAR A SEQUÊNCIA DE MONTAGEM</span>
+              <span class="sm:hidden">ROLE PARA MONTAR</span>
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. TECHNOLOGY SECTION -->
+      <section id="engineering" class="w-full px-margin-mobile lg:px-margin-desktop py-space-4xl bg-surface relative z-10 scroll-mt-20">
+        <div class="max-w-[1680px] mx-auto flex flex-col space-y-space-2xl">
+          <div class="flex flex-col space-y-space-2xs reveal-up">
+            <span class="font-label-technical text-label-technical tracking-widest text-primary uppercase">03 / ECOSSISTEMA DIAGNÓSTICO DE ALTA PRECISÃO</span>
+            <h2 class="font-headline-lg text-headline-lg text-on-surface">Robótica Digital Submilimétrica</h2>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-space-lg reveal-stagger">
+            <div class="bg-surface-container p-space-lg rounded-xl space-y-space-sm shadow-md">
+              <div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center text-primary">
+                <span class="material-symbols-outlined">document_scanner</span>
+              </div>
+              <h3 class="font-headline-sm text-headline-sm text-on-surface">Escaneamento Digital</h3>
+              <p class="font-body-sm text-body-sm text-on-surface-variant">
+                Fotogrametria intraoral óptica de 20 mícrons que dispensa moldagens convencionais em gesso, capturando 3.000 quadros coloridos por segundo.
+              </p>
+              <span class="font-label-coordinate text-label-coordinate text-primary block pt-space-xs">RESOLUÇÃO: 0.02mm</span>
+            </div>
+            <div class="bg-surface-container p-space-lg rounded-xl space-y-space-sm shadow-md">
+              <div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center text-primary">
+                <span class="material-symbols-outlined">view_in_ar</span>
+              </div>
+              <h3 class="font-headline-sm text-headline-sm text-on-surface">Planejamento 3D</h3>
+              <p class="font-body-sm text-body-sm text-on-surface-variant">
+                Tomografia Computadorizada de Feixe Cônico (CBCT) integrada a inteligência artificial para mapeamento nervoso e simulação pré-cirúrgica de cada vetor de inserção.
+              </p>
+              <span class="font-label-coordinate text-label-coordinate text-primary block pt-space-xs">VOXEL: 75 MÍCRONS</span>
+            </div>
+            <div class="bg-surface-container p-space-lg rounded-xl space-y-space-sm shadow-md">
+              <div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center text-primary">
+                <span class="material-symbols-outlined">explore</span>
+              </div>
+              <h3 class="font-headline-sm text-headline-sm text-on-surface">Diagnóstico de Precisão</h3>
+              <p class="font-body-sm text-body-sm text-on-surface-variant">
+                Rastreamento óptico estereoscópico dinâmico que fornece navegação cirúrgica milimétrica em tempo real durante o preparo do leito da osteotomia.
+              </p>
+              <span class="font-label-coordinate text-label-coordinate text-primary block pt-space-xs">LATÊNCIA: &lt; 2.5ms</span>
+            </div>
+            <div class="bg-surface-container p-space-lg rounded-xl space-y-space-sm shadow-md">
+              <div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center text-primary">
+                <span class="material-symbols-outlined">manufacturing</span>
+              </div>
+              <h3 class="font-headline-sm text-headline-sm text-on-surface">Manufatura Personalizada</h3>
+              <p class="font-body-sm text-body-sm text-on-surface-variant">
+                Sinterização a laser aditiva direta via CAD/CAM em titânio médico puro, criando estruturas subperiosteais sob medida para anatomias ósseas desafiadoras.
+              </p>
+              <span class="font-label-coordinate text-label-coordinate text-primary block pt-space-xs">FABRICAÇÃO: CLASSE 100</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- 5B. DIGITAL SURGICAL PLANNING SCROLL EXPERIENCE (TASK F & G) -->
+      <section id="planning-scroll-container" class="relative w-full h-[260vh] bg-surface relative z-10 scroll-mt-20">
+        <div id="planning-sticky-viewport" class="sticky top-0 w-full h-screen min-h-[640px] flex flex-col justify-between overflow-hidden px-margin-mobile lg:px-margin-desktop pt-24 pb-space-lg relative">
+          
+          <!-- Planning Canvas Backdrop (Protected Layer 2) -->
+          <div class="absolute inset-0 z-0 pointer-events-none overflow-hidden flex items-center justify-center">
+            <canvas id="planningCanvas" class="w-full h-full block"></canvas>
+            <!-- Vignette Gradients for Luxury Dark Blending -->
+            <div class="absolute inset-0 pointer-events-none bg-gradient-to-r from-surface/95 via-surface/30 to-transparent w-full lg:w-3/5"></div>
+            <div class="absolute inset-0 pointer-events-none bg-gradient-to-b from-surface/80 via-transparent to-surface/90"></div>
+          </div>
+
+          <!-- Top Technical Coordinate Ledger -->
+          <div class="relative z-10 flex flex-wrap items-center justify-between gap-y-space-xs text-on-surface-variant pt-space-xs pointer-events-auto">
+            <div class="flex items-center gap-space-sm font-label-coordinate text-label-coordinate tracking-widest text-primary uppercase">
+              <span class="w-1.5 h-1.5 rounded-full bg-primary animate-ping"></span>
+              <span>TRAJETÓRIA IMPLANTAR // PLANEJAMENTO 3D</span>
+            </div>
+            <div class="hidden md:flex items-center gap-space-lg font-label-technical text-label-technical tracking-wider text-outline">
+              <span>TOMOGRAFIA VOLUMÉTRICA CBCT</span>
+              <span>•</span>
+              <span>TOLERÂNCIA ANGULAR: ±0.01°</span>
+            </div>
+          </div>
+
+          <!-- Centerpiece Stage: Responsive Narrative & Protected 3D Zone -->
+          <div class="relative z-10 grid grid-cols-1 md:grid-cols-12 gap-y-space-sm md:gap-space-xl items-center my-auto py-space-2xs md:py-space-md">
+            <!-- Left Column on Desktop / Title & Content on Mobile -->
+            <div class="md:col-span-5 xl:col-span-4 flex flex-col space-y-space-xs md:space-y-space-md pointer-events-auto max-w-md">
+              <div class="inline-flex items-center gap-space-xs font-label-technical text-label-technical tracking-widest text-primary uppercase">
+                <span>SIMULAÇÃO CIRÚRGICA COMPUTADORIZADA</span>
+              </div>
+              <h2 class="font-headline-md lg:font-headline-lg text-headline-md lg:text-headline-lg text-on-surface leading-tight">
+                Navegação Virtual e <span class="italic text-primary">Trajetória Óssea.</span>
+              </h2>
+
+              <!-- Mobile Safe Visual Zone Spacer (Canvas between Title and Description) -->
+              <div class="h-[36vh] sm:h-[40vh] md:hidden pointer-events-none" aria-hidden="true"></div>
+
+              <!-- Explanatory Copy & Clinical Narrative -->
+              <p class="font-body-sm lg:font-body-lg text-body-sm lg:text-body-lg text-on-surface-variant font-light leading-relaxed">
+                Planejamento tridimensional para definir eixo, profundidade e posição do implante antes da intervenção.
+              </p>
+              <div class="grid grid-cols-2 gap-space-xs sm:gap-space-sm pt-space-xs">
+                <div class="bg-surface-container-low/80 p-space-xs sm:p-space-sm rounded border-l-2 border-primary">
+                  <span class="font-label-coordinate text-label-coordinate text-outline block uppercase text-[8px] sm:text-[9px]">VETOR DE INSERÇÃO</span>
+                  <span class="font-label-technical text-label-technical text-on-surface font-semibold text-[10px] sm:text-[11px]">Calibração Estereotáxica 3D</span>
+                </div>
+                <div class="bg-surface-container-low/80 p-space-xs sm:p-space-sm rounded border-l-2 border-primary">
+                  <span class="font-label-coordinate text-label-coordinate text-outline block uppercase text-[8px] sm:text-[9px]">PRESERVAÇÃO NEURAL</span>
+                  <span class="font-label-technical text-label-technical text-on-surface font-semibold text-[10px] sm:text-[11px]">&gt; 2.0mm de Margem</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Center / Right: Open protected space for 3D jaw animation on desktop/tablet -->
+            <div class="hidden md:block md:col-span-7 xl:col-span-8 pointer-events-none"></div>
+          </div>
+
+          <!-- Bottom Telemetry Status Ledger (Repositioned to safe bottom edge) -->
+          <div class="relative z-20 flex flex-col space-y-1.5 sm:space-y-2 pt-2 pb-1 border-t border-outline-variant/20 pointer-events-auto bg-surface/75 backdrop-blur-sm px-2 rounded-t-lg">
+            <!-- Primary Telemetry & Scrub Progress -->
+            <div class="flex flex-wrap items-center justify-between gap-x-space-md gap-y-1">
+              <div class="flex items-center gap-space-sm font-label-coordinate text-label-coordinate min-w-0">
+                <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse shrink-0"></span>
+                <span id="planningPhaseBadge" class="text-on-surface font-semibold uppercase tracking-wider truncate text-[10px] sm:text-[11px]">
+                  01 / MAPEAMENTO TOMOGRÁFICO MANDIBULAR
+                </span>
+                <span class="text-outline hidden md:inline">•</span>
+                <p id="planningPhaseDesc" class="font-caption text-caption text-on-surface-variant font-light truncate max-w-md hidden lg:inline text-[11px]">
+                  Reconstrução volumétrica 3D da mandíbula em alta densidade com definição dos limites do canal mandibular.
+                </p>
+              </div>
+              <div class="flex items-center gap-space-sm font-label-coordinate text-label-coordinate shrink-0 ml-auto">
+                <span class="text-outline uppercase text-[9px] hidden sm:inline">PROGRESSO</span>
+                <div class="w-20 sm:w-28 h-1 bg-surface-container-high rounded-full overflow-hidden">
+                  <div id="planningScrollBar" class="h-full bg-primary transition-all duration-75" style="width: 1%;"></div>
+                </div>
+                <span id="planningFrameIndicator" class="font-bold tracking-widest text-primary text-[10px] sm:text-[11px]">FRAME 001/096</span>
+              </div>
+            </div>
+            <!-- Technical Baseline Ledger -->
+            <div class="flex flex-wrap items-center justify-between gap-space-xs text-outline font-label-coordinate text-[9px] sm:text-[10px] pt-1 border-t border-outline-variant/10">
+              <span class="truncate">INTERFACE DE PLANEJAMENTO DIGITAL // DICOM + STL CAD/CAM</span>
+              <span class="text-primary flex items-center gap-1 shrink-0">
+                <span class="material-symbols-outlined text-[12px]">south</span>
+                <span class="hidden sm:inline">ROLE PARA ACIONAR A TRAJETÓRIA DO IMPLANTE</span>
+                <span class="sm:hidden">ROLE PARA EXPLORAR</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. PROCESS (FOUR-STEP ARCHITECTURAL PROTOCOL) -->
+      <section id="protocol" class="w-full px-margin-mobile lg:px-margin-desktop py-space-4xl bg-surface-container-lowest relative z-10 scroll-mt-20">
+        <div class="max-w-[1680px] mx-auto flex flex-col space-y-space-2xl">
+          <div class="flex flex-col space-y-space-2xs reveal-up">
+            <span class="font-label-technical text-label-technical tracking-widest text-primary uppercase">DIRETRIZ CIRÚRGICA</span>
+            <h2 class="font-headline-lg text-headline-lg text-on-surface">Protocolo Arquitetônico em Quatro Etapas</h2>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-space-lg relative reveal-stagger">
+            <div class="bg-surface-container-low p-space-lg rounded-xl space-y-space-sm relative">
+              <div class="flex items-center justify-between">
+                <span class="font-headline-sm text-headline-sm text-primary">01</span>
+                <span class="font-label-coordinate text-label-coordinate text-outline">ADMISSÃO PRÉ-OPERATÓRIA</span>
+              </div>
+              <h3 class="font-headline-sm text-headline-sm text-on-surface">Avaliação Inicial</h3>
+              <p class="font-body-sm text-body-sm text-on-surface-variant">
+                Tomografia CBCT craniofacial para análise de densidade óssea, videografia estética do sorriso, estabilidade da ATM e perfil biológico sistêmico.
+              </p>
+            </div>
+            <div class="bg-surface-container-low p-space-lg rounded-xl space-y-space-sm relative">
+              <div class="flex items-center justify-between">
+                <span class="font-headline-sm text-headline-sm text-primary">02</span>
+                <span class="font-label-coordinate text-label-coordinate text-outline">ANÁLISE ESTATÍSTICA</span>
+              </div>
+              <h3 class="font-headline-sm text-headline-sm text-on-surface">Diagnóstico Cirúrgico</h3>
+              <p class="font-body-sm text-body-sm text-on-surface-variant">
+                Simulação cirúrgica virtual volumétrica, estratificação de risco vascular e cálculo personalizado da distribuição de carga mastigatória.
+              </p>
+            </div>
+            <div class="bg-surface-container-low p-space-lg rounded-xl space-y-space-sm relative">
+              <div class="flex items-center justify-between">
+                <span class="font-headline-sm text-headline-sm text-primary">03</span>
+                <span class="font-label-coordinate text-label-coordinate text-outline">PREPARAÇÃO PROTÉTICA</span>
+              </div>
+              <h3 class="font-headline-sm text-headline-sm text-on-surface">Planejamento CAD/CAM</h3>
+              <p class="font-body-sm text-body-sm text-on-surface-variant">
+                Fabricação de guias cirúrgicos de alta precisão em resina biocompatível, confecção de próteses provisórias e fresagem de pilares anatômicos.
+              </p>
+            </div>
+            <div class="bg-surface-container-low p-space-lg rounded-xl space-y-space-sm relative">
+              <div class="flex items-center justify-between">
+                <span class="font-headline-sm text-headline-sm text-primary">04</span>
+                <span class="font-label-coordinate text-label-coordinate text-outline">PROCEDIMENTO CLÍNICO</span>
+              </div>
+              <h3 class="font-headline-sm text-headline-sm text-on-surface">Ato Cirúrgico</h3>
+              <p class="font-body-sm text-body-sm text-on-surface-variant">
+                Instalação minimamente invasiva dos implantes guiada por computador, sob sedação consciente e aceleração biológica imediata com PRF.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7. DOCTOR SECTION (CHIEF SURGEON EDITORIAL PROFILE) -->
+      <section id="leadership" class="w-full px-margin-mobile lg:px-margin-desktop py-space-4xl bg-surface relative z-10 scroll-mt-20">
+        <div class="max-w-[1680px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-space-2xl items-center">
+          <div class="lg:col-span-5 relative reveal-up">
+            <div class="relative w-full aspect-[4/5] rounded-xl overflow-hidden bg-surface-container-lowest shadow-2xl">
+              <img alt="Portrait of Dr. Julian von Aurea, MD, DMD, PhD in dark tailored surgical attire" class="w-full h-full object-cover object-top" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAT_Gsq4wXXdq9aKQ4NyuHhxCVcaEruNh-EYqKrKOfESAZq9XU9W6ZJPV-zzO3-FfesqLWsQzgiXpbHkqJMqjzVdj575Y0sJ-LoS6YnSew1yiyoRttTqS97i2GJZyQ449IubdNDibR0pHb0AFcSXchwpyOo2hot5u_keOaXM_1ZC5rcGQYTf2Td6tRUBSXH74I8Xar4XhuTx0TVDbVbckyOg2ktyxsq3_P0GKCkwbwePUHg2CPtO-O5"/>
+              <div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-transparent to-transparent opacity-60"></div>
+              <div class="absolute bottom-space-md left-space-md right-space-md bg-surface-container-lowest/90 backdrop-blur-md p-space-sm rounded">
+                <div class="font-label-coordinate text-label-coordinate text-primary uppercase">REGISTRY: GLN 76010023491</div>
+                <div class="font-label-technical text-label-technical text-on-surface">CERTIFICADO PELO CONSELHO MÉDICO FEDERAL SUÍÇO</div>
+              </div>
+            </div>
+          </div>
+          <div class="lg:col-span-7 flex flex-col space-y-space-md reveal-up">
+            <span class="font-label-technical text-label-technical tracking-widest text-primary uppercase">DIRETOR CIRÚRGICO RESPONSÁVEL</span>
+            <h2 class="font-display-xl text-display-xl tracking-tight text-on-surface">
+              Dr. Julian von Aurea, <span class="text-on-surface-variant text-headline-lg font-light">MD, DMD, PhD</span>
+            </h2>
+            <p class="font-body-lg text-body-lg text-primary italic font-serif">
+              “A cirurgia é a forma mais pura de arquitetura funcional. Quando a engenharia estrutural respeita a biologia dos tecidos, a longevidade torna-se inevitável.”
+            </p>
+            <p class="font-body-md text-body-md text-on-surface-variant">
+              Com dupla titulação de especialista em reconstrução bucomaxilofacial e implantodontia cirúrgica, o Dr. von Aurea realizou suas residências em Zurique, Frankfurt e Tóquio. Com mais de duas décadas de dedicação a próteses osseointegradas de alta complexidade, sua atuação une o rigor da engenharia mecânica à harmonia biológica facial.
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-space-md pt-space-xs">
+              <div class="bg-surface-container-low p-space-sm rounded border-l-2 border-primary">
+                <span class="font-label-coordinate text-label-coordinate text-outline block uppercase">MEMBRO TITULAR (FELLOW)</span>
+                <span class="font-label-technical text-label-technical text-on-surface font-semibold">European Assoc. for Osseointegration (EAO)</span>
+              </div>
+              <div class="bg-surface-container-low p-space-sm rounded border-l-2 border-primary">
+                <span class="font-label-coordinate text-label-coordinate text-outline block uppercase">DIPLOMATA TITULADO</span>
+                <span class="font-label-technical text-label-technical text-on-surface font-semibold">Mestre e Diplomata do ICOI em Implantodontia</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 8. CLINIC (IMMERSIVE ARCHITECTURAL ENVIRONMENT) -->
+      <section id="clinic" class="w-full px-margin-mobile lg:px-margin-desktop py-space-4xl bg-surface-container-lowest relative z-10 scroll-mt-20">
+        <div class="max-w-[1680px] mx-auto flex flex-col space-y-space-2xl">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-space-xl items-end">
+            <div class="lg:col-span-7 flex flex-col space-y-space-2xs">
+              <span class="font-label-technical text-label-technical tracking-widest text-primary uppercase">HARMONIA ESPACIAL</span>
+              <h2 class="font-headline-lg text-headline-lg text-on-surface">Santuário com Vista para o Lago de Zurique</h2>
+            </div>
+            <div class="lg:col-span-5">
+              <p class="font-body-md text-body-md text-on-surface-variant">
+                Concebido como um refúgio acústico em calcário escuro monolítico, detalhes em bronze e suítes cirúrgicas hospitalares padrão ISO 5, proporcionando absoluta discrição e serenidade.
+              </p>
+            </div>
+          </div>
+          <div class="relative w-full aspect-[16/9] lg:aspect-[21/9] rounded-2xl overflow-hidden shadow-2xl">
+            <img alt="Aurea surgical consultation suite featuring dark granite walls and expansive glass overlooking Lake Zurich" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJuM-FH5OkILq4Cg0_ZaQd8endYcD86LS6yJUO6nZQLR6U12PR-sncYRgiborju7XOrfOjwAzs5vulKO__OFMh4REoXiZn1oZS1M5EVVKY8xUtIdadsKzw9Es79vLj29qwdL65fODXg8c6DgcGjTTUGoLnIi6I-uwEz9I7hckzC9NDVr5gtBbz_41i3YqzWkbjx5pzkilSfVW1KsGNQyxnItqKRE-l-xM7VquQzLI-MHkWIzBeioGm"/>
+            <div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest/80 via-transparent to-transparent"></div>
+            <div class="absolute bottom-space-lg left-space-lg right-space-lg flex flex-wrap items-center justify-between gap-space-md">
+              <div class="flex items-center gap-space-md bg-surface-container-lowest/90 backdrop-blur-md px-space-md py-space-sm rounded-lg">
+                <div class="flex items-center gap-space-xs">
+                  <span class="material-symbols-outlined text-primary text-[18px]">lock</span>
+                  <span class="font-label-technical text-label-technical text-on-surface uppercase">Acesso por Elevador Privativo Direto</span>
+                </div>
+                <span class="text-outline">•</span>
+                <div class="flex items-center gap-space-xs">
+                  <span class="material-symbols-outlined text-primary text-[18px]">air</span>
+                  <span class="font-label-technical text-label-technical text-on-surface uppercase">Fluxo de Ar Laminar Classe ISO 5</span>
+                </div>
+              </div>
+              <div class="font-label-coordinate text-label-coordinate text-primary bg-surface-container-lowest/90 backdrop-blur-md px-space-md py-space-sm rounded-lg uppercase">
+                COORDINATE: 47.3686° N, 8.5391° E
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 9. FAQ (CLEAN ACCORDION SECTION) -->
+      <section class="w-full px-margin-mobile lg:px-margin-desktop py-space-4xl bg-surface relative z-10">
+        <div class="max-w-[1040px] mx-auto flex flex-col space-y-space-2xl">
+          <div class="flex flex-col space-y-space-2xs text-center items-center">
+            <span class="font-label-technical text-label-technical tracking-widest text-primary uppercase">DÚVIDAS CLÍNICAS</span>
+            <h2 class="font-headline-lg text-headline-lg text-on-surface">Perguntas Frequentes</h2>
+          </div>
+          <div class="flex flex-col space-y-space-xs" id="faqAccordion">
+            <!-- Item 1 -->
+            <div class="bg-surface-container rounded-lg overflow-hidden transition-all duration-200">
+              <button class="w-full flex items-center justify-between p-space-md text-left font-headline-sm text-headline-sm text-on-surface focus:outline-none faq-trigger" type="button">
+                <span>Qual é a duração média do procedimento cirúrgico?</span>
+                <span class="material-symbols-outlined text-primary text-[20px] transition-transform duration-200 faq-icon">expand_more</span>
+              </button>
+              <div class="px-space-md pb-space-md font-body-sm text-body-sm text-on-surface-variant hidden faq-content">
+                A instalação guiada de um implante unitário por computador costuma requerer de 30 a 45 minutos de tempo cirúrgico ativo. Já as restaurações de arco total com carga imediata são concluídas entre 3 e 4 horas, período no qual as próteses provisórias personalizadas são confeccionadas e instaladas antes de você deixar a suíte cirúrgica.
+              </div>
+            </div>
+            <!-- Item 2 -->
+            <div class="bg-surface-container rounded-lg overflow-hidden transition-all duration-200">
+              <button class="w-full flex items-center justify-between p-space-md text-left font-headline-sm text-headline-sm text-on-surface focus:outline-none faq-trigger" type="button">
+                <span>Qual é o índice biológico de sucesso na osseointegração?</span>
+                <span class="material-symbols-outlined text-primary text-[20px] transition-transform duration-200 faq-icon">expand_more</span>
+              </button>
+              <div class="px-space-md pb-space-md font-body-sm text-body-sm text-on-surface-variant hidden faq-content">
+                A Aurea sustenta um índice cumulativo documentado de sucesso de 99.4% em 10 anos. Utilizando titânio nanoestruturado de alta pureza e superfícies hidroativas, a adesão celular inicia-se em 48 horas, alcançando osseointegração funcional completa em 6 a 10 semanas.
+              </div>
+            </div>
+            <!-- Item 3 -->
+            <div class="bg-surface-container rounded-lg overflow-hidden transition-all duration-200">
+              <button class="w-full flex items-center justify-between p-space-md text-left font-headline-sm text-headline-sm text-on-surface focus:outline-none faq-trigger" type="button">
+                <span>O pós-operatório cirúrgico é doloroso ou incapacitante?</span>
+                <span class="material-symbols-outlined text-primary text-[20px] transition-transform duration-200 faq-icon">expand_more</span>
+              </button>
+              <div class="px-space-md pb-space-md font-body-sm text-body-sm text-on-surface-variant hidden faq-content">
+                Como nossos procedimentos utilizam guias cirúrgicos estereolitográficos 3D, a necessidade de grandes incisões e descolamentos periósteos é minimizada. A grande maioria dos pacientes relata apenas leve pressão, controlável com analgésicos comuns, retomando suas atividades executivas e rotineiras já na manhã seguinte.
+              </div>
+            </div>
+            <!-- Item 4 -->
+            <div class="bg-surface-container rounded-lg overflow-hidden transition-all duration-200">
+              <button class="w-full flex items-center justify-between p-space-md text-left font-headline-sm text-headline-sm text-on-surface focus:outline-none faq-trigger" type="button">
+                <span>Quais são os diferenciais da Aurea em relação a implantes convencionais?</span>
+                <span class="material-symbols-outlined text-primary text-[20px] transition-transform duration-200 faq-icon">expand_more</span>
+              </button>
+              <div class="px-space-md pb-space-md font-body-sm text-body-sm text-on-surface-variant hidden faq-content">
+                Clínicas convencionais frequentemente utilizam componentes genéricos de catálogo. Na Aurea, cada pilar, angulação e coroa é manufaturada como um monobloco CAD/CAM sob medida, projetado por simulações biomecânicas de elementos finitos e montado em salas limpas de padrão hospitalar.
+              </div>
+            </div>
+            <!-- Item 5 -->
+            <div class="bg-surface-container rounded-lg overflow-hidden transition-all duration-200">
+              <button class="w-full flex items-center justify-between p-space-md text-left font-headline-sm text-headline-sm text-on-surface focus:outline-none faq-trigger" type="button">
+                <span>Existe assistência dedicada para pacientes internacionais?</span>
+                <span class="material-symbols-outlined text-primary text-[20px] transition-transform duration-200 faq-icon">expand_more</span>
+              </button>
+              <div class="px-space-md pb-space-md font-body-sm text-body-sm text-on-surface-variant hidden faq-content">
+                Sim. Nosso departamento de Concierge Privado coordena transfers a partir do Aeroporto de Zurique (Kloten) ou Tóquio Haneda, análise prévia remota de exames tomográficos antes da viagem e hospedagem selecionada em suítes parceiras à beira do lago.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 10. FINAL CTA -->
+      <section class="w-full px-margin-mobile lg:px-margin-desktop py-space-4xl bg-surface-container-lowest relative overflow-hidden z-10">
+        <div class="pointer-events-none absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[350px] bg-primary/10 rounded-full blur-[150px]"></div>
+        <div class="max-w-[1280px] mx-auto text-center flex flex-col items-center space-y-space-lg relative z-10">
+          <span class="font-label-technical text-label-technical tracking-widest text-primary uppercase">CONSULTA CLÍNICA PRIVATIVA</span>
+          <h2 class="font-display-xl text-display-xl tracking-tight text-on-surface max-w-3xl">
+            Seu próximo passo começa com um diagnóstico de <span class="text-primary italic">precisão.</span>
+          </h2>
+          <p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl font-light">
+            Consulta diagnóstica digital de 90 minutos, tomografia computadorizada CBCT craniofacial completa e alinhamento estratégico direto com o Dr. Julian von Aurea.
+          </p>
+          <div class="pt-space-sm flex flex-col sm:flex-row items-center gap-space-md">
+            <a class="px-space-xl py-space-sm bg-primary text-on-primary font-label-technical text-label-technical uppercase tracking-widest hover:bg-primary-fixed transition-all duration-200 shadow-lg shadow-primary/20" data-path="evaluation" href="#evaluation">
+              Agendar uma avaliação
+            </a>
+            <a class="px-space-lg py-space-sm bg-surface-container text-on-surface hover:text-primary font-label-technical text-label-technical uppercase tracking-widest transition-colors duration-150" href="tel:+410442189000">
+              Concierge: +41 (0)44 218 9000
+            </a>
+          </div>
+          <div class="pt-space-md flex items-center gap-space-sm font-label-coordinate text-label-coordinate text-outline uppercase">
+            <span>SIGILO MÉDICO CONFIDENCIAL GARANTIDO</span>
+            <span>•</span>
+            <span>INFRAESTRUTURA CERTIFICADA ISO 13485</span>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="w-full bg-surface-container-lowest border-t border-outline-variant/30 mt-space-4xl relative z-10">
+    <div class="max-w-[1680px] mx-auto px-margin-mobile lg:px-margin-desktop py-space-3xl">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-space-xl pb-space-3xl border-b border-outline-variant/20">
+        <div class="lg:col-span-4 flex flex-col justify-between space-y-space-md">
+          <div class="space-y-space-xs">
+            <div class="flex items-center gap-space-sm">
+              <img alt="Aurea Surgical Architecture Logo" class="h-6 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1VNe0JHsp-juwN57p_LTbfIoYFzHqoPvT1Ue39RObUsvNs4liPCVTtIN22xR9oCv-fPJQoTCqnitbBBQORcs6Ow0Vmybcjcfsi3hYX8X6aBNW_q-s0x3lM217UNOn6Bz9hRCHANpoxIX62JaNP-JsaKz5zThpM7Y1yKtpAQU2HvKHUOkaXsrCBuaN2QkKL1vCQ12LwA7bbbHBnf6NudOVlsUxUYau-0Wi3yBZytZJh6CrJVupc6fTUcdgs"/>
+              <span class="font-headline-sm text-headline-sm tracking-tight text-on-surface uppercase">Aurea</span>
+            </div>
+            <p class="font-body-sm text-body-sm text-on-surface-variant max-w-sm pt-space-xs">Alta arquitetura cirúrgica reconstrutiva e implantodontia craniana personalizada. Engenharia em tolerâncias absolutas para casos clínicos de alta complexidade em todo o mundo.</p>
+          </div>
+          <div class="space-y-space-2xs">
+            <span class="font-label-coordinate text-label-coordinate text-outline uppercase block">Coordenadas Operacionais</span>
+            <span class="font-label-technical text-label-technical text-on-surface block">ZURICH: 47.3686° N, 8.5391° E // BAHNHOFSTRASSE 42</span>
+            <span class="font-label-technical text-label-technical text-on-surface block">TOKYO: 35.6719° N, 139.7639° E // GINZA 6-CHOME</span>
+          </div>
+        </div>
+        <div class="lg:col-span-2 space-y-space-sm">
+          <span class="font-label-coordinate text-label-coordinate text-primary uppercase block">Arquitetura Clínica</span>
+          <ul class="space-y-space-xs font-body-sm text-body-sm text-on-surface-variant">
+            <li><a class="hover:text-primary transition-colors duration-150" data-path="philosophy" href="#philosophy">Filosofia</a></li>
+            <li><a class="hover:text-primary transition-colors duration-150" data-path="engineering" href="#engineering">Materiais Biomiméticos</a></li>
+            <li><a class="hover:text-primary transition-colors duration-150" data-path="treatments" href="#treatments">Reconstrução Craniofacial</a></li>
+            <li><a class="hover:text-primary transition-colors duration-150" data-path="protocol" href="#protocol">Protocolo ISO 5832-3</a></li>
+            <li><a class="hover:text-primary transition-colors duration-150" data-path="clinic" href="#clinic">Suítes Cirúrgicas</a></li>
+          </ul>
+        </div>
+        <div class="lg:col-span-3 space-y-space-sm">
+          <span class="font-label-coordinate text-label-coordinate text-primary uppercase block">Acreditações e Chancelas</span>
+          <ul class="space-y-space-xs font-label-technical text-label-technical text-on-surface-variant">
+            <li><span class="text-primary">+</span> REGISTRO MÉDICO FEDERAL SUÍÇO (GLN 760100)</li>
+            <li><span class="text-primary">+</span> MEMBRO FELLOW DA EAO (ASSOC. EUROPEIA DE OSSEOINTEGRAÇÃO)</li>
+            <li><span class="text-primary">+</span> DIPLOMATA TITULADO EM CIRURGIA DE IMPLANTES PELO ICOI</li>
+            <li><span class="text-primary">+</span> SALA LIMPA CERTIFICADA CLASSE ISO 5</li>
+          </ul>
+        </div>
+        <div id="evaluation" class="lg:col-span-3 space-y-space-sm scroll-mt-20">
+          <span class="font-label-coordinate text-label-coordinate text-primary uppercase block">Monografia Clínica Privada</span>
+          <p class="font-body-sm text-body-sm text-on-surface-variant">Receba tratados clínicos confidenciais, estudos de casos cirúrgicos e artigos avançados de simpósios biométricos.</p>
+          <form class="pt-space-xs flex flex-col space-y-space-xs">
+            <div class="flex items-center border-b border-outline-variant focus-within:border-primary pb-space-2xs">
+              <input class="bg-transparent font-label-technical text-label-technical text-on-surface placeholder:text-outline focus:outline-none w-full uppercase" placeholder="CANAL CONFIDENCIAL (E-MAIL)" type="email"/>
+              <button class="font-label-technical text-label-technical text-primary hover:text-on-surface transition-colors duration-150 uppercase tracking-widest pl-space-xs" type="button">Solicitar</button>
+            </div>
+            <span class="font-label-coordinate text-label-coordinate text-outline">PROTEGIDO POR PROTOCOLO DE CONFIDENCIALIDADE</span>
+          </form>
+        </div>
+      </div>
+      <div class="pt-space-lg flex flex-col md:flex-row items-center justify-between gap-space-md">
+        <div class="flex items-center gap-space-lg font-label-coordinate text-label-coordinate text-outline uppercase">
+          <span>© 2025 AUREA IMPLANT ARCHITECTURE SA. TODOS OS DIREITOS RESERVADOS.</span>
+          <span>CONFORME ISO 13485</span>
+        </div>
+        <div class="flex items-center gap-space-lg font-label-technical text-label-technical text-outline-variant">
+          <a class="hover:text-on-surface transition-colors duration-150 uppercase" data-path="legal" href="#">Política de Privacidade</a>
+          <a class="hover:text-on-surface transition-colors duration-150 uppercase" data-path="legal" href="#">Governança Clínica</a>
+          <a class="hover:text-on-surface transition-colors duration-150 uppercase" data-path="legal" href="#">Aviso Legal Médico</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <!-- ===================================================================== -->
+  <!-- LEAD QUALIFICATION MODAL ("Página Inteligente" Lite - Task E)         -->
+  <!-- ===================================================================== -->
+  <div id="evaluationModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300" aria-hidden="true" role="dialog" aria-modal="true">
+    <!-- Backdrop Overlay -->
+    <div id="evaluationModalBackdrop" class="absolute inset-0 bg-surface-container-lowest/80 backdrop-blur-md transition-opacity"></div>
+    
+    <!-- Modal Card Dialog -->
+    <div class="relative z-10 w-full max-w-xl bg-surface-container-lowest border border-outline-variant/40 rounded-2xl p-6 sm:p-space-xl shadow-2xl transform scale-95 transition-transform duration-300 max-h-[90vh] overflow-y-auto">
+      
+      <!-- Close Button -->
+      <button id="closeEvaluationModal" type="button" aria-label="Fechar" class="absolute top-space-md right-space-md w-10 h-10 rounded-full bg-surface-container-low hover:bg-surface-container text-on-surface-variant hover:text-primary flex items-center justify-center transition-colors">
+        <span class="material-symbols-outlined text-[20px]">close</span>
+      </button>
+
+      <!-- Modal Header -->
+      <div class="space-y-space-2xs mb-space-lg">
+        <div class="flex items-center gap-space-xs font-label-coordinate text-label-coordinate text-primary uppercase tracking-widest">
+          <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+          <span>CONCIERGE CIRÚRGICO // PROTOCOLO CONFIDENCIAL</span>
+        </div>
+        <h3 class="font-headline-md text-headline-md text-on-surface">Solicitar Avaliação Confidencial</h3>
+        <p class="font-body-sm text-body-sm text-on-surface-variant font-light">
+          Preencha seus dados para receber um direcionamento diagnóstico privativo e alinhar sua consulta diretamente com nossa equipe cirúrgica.
+        </p>
+      </div>
+
+      <!-- Form -->
+      <form id="evaluationForm" class="space-y-space-md">
+        <!-- Field 1: Nome -->
+        <div class="space-y-space-2xs">
+          <label for="eval-name" class="block font-label-technical text-label-technical text-on-surface uppercase tracking-wider">Nome Completo</label>
+          <input id="eval-name" type="text" required placeholder="Ex: Alexandre Silveira" class="w-full bg-surface-container-low border border-outline-variant/40 rounded-lg px-space-md py-3 text-on-surface placeholder:text-outline/70 focus:border-primary focus:outline-none transition-colors font-body-sm text-[14px]"/>
+        </div>
+
+        <!-- Field 2: WhatsApp -->
+        <div class="space-y-space-2xs">
+          <label for="eval-phone" class="block font-label-technical text-label-technical text-on-surface uppercase tracking-wider">WhatsApp com DDD</label>
+          <input id="eval-phone" type="tel" required placeholder="(11) 99999-9999" class="w-full bg-surface-container-low border border-outline-variant/40 rounded-lg px-space-md py-3 text-on-surface placeholder:text-outline/70 focus:border-primary focus:outline-none transition-colors font-body-sm text-[14px]"/>
+        </div>
+
+        <!-- Field 3: Procedimento de interesse -->
+        <div class="space-y-space-2xs">
+          <label for="eval-procedure" class="block font-label-technical text-label-technical text-on-surface uppercase tracking-wider">Procedimento de Interesse</label>
+          <div class="relative">
+            <select id="eval-procedure" required class="w-full bg-surface-container-low border border-outline-variant/40 rounded-lg px-space-md py-3 text-on-surface focus:border-primary focus:outline-none transition-colors font-body-sm text-[14px] appearance-none pr-10 cursor-pointer">
+              <option value="" disabled selected>Selecione o procedimento...</option>
+              <option value="Implantes Dentários">Implantes Dentários</option>
+              <option value="Reabilitação de Arco Total">Reabilitação de Arco Total</option>
+              <option value="Reabilitação Oral Complexa">Reabilitação Oral Complexa</option>
+              <option value="Estética do Sorriso">Estética do Sorriso</option>
+            </select>
+            <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none text-[20px]">expand_more</span>
+          </div>
+        </div>
+
+        <!-- Field 4: Urgência -->
+        <div class="space-y-space-2xs">
+          <label for="eval-urgency" class="block font-label-technical text-label-technical text-on-surface uppercase tracking-wider">Previsão ou Urgência</label>
+          <div class="relative">
+            <select id="eval-urgency" required class="w-full bg-surface-container-low border border-outline-variant/40 rounded-lg px-space-md py-3 text-on-surface focus:border-primary focus:outline-none transition-colors font-body-sm text-[14px] appearance-none pr-10 cursor-pointer">
+              <option value="" disabled selected>Selecione o prazo desejado...</option>
+              <option value="Já tenho uma data em mente">Já tenho uma data em mente</option>
+              <option value="Nos próximos 30 dias">Nos próximos 30 dias</option>
+              <option value="Ainda pesquisando">Ainda pesquisando</option>
+            </select>
+            <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none text-[20px]">expand_more</span>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="pt-space-xs">
+          <button type="submit" class="w-full py-space-sm bg-primary text-on-primary font-label-technical text-label-technical uppercase tracking-widest hover:bg-primary-fixed transition-all duration-200 shadow-lg shadow-primary/20 flex items-center justify-center gap-2 rounded">
+            <span>Enviar via WhatsApp</span>
+            <span class="material-symbols-outlined text-[18px]">send</span>
+          </button>
+          <div class="flex items-center justify-center gap-1.5 pt-space-xs text-outline font-label-coordinate text-[10px] tracking-wider uppercase">
+            <span class="material-symbols-outlined text-[12px]">lock</span>
+            <span>Comunicação confidencial criptografada</span>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Interactive Scripts: Scroll-Driven Frame Scrubbing + Accordions -->
+  <script>
+    (function() {
+      // =========================================================================
+      // CONFIGURAÇÃO DO CONCIERGE: NÚMERO DO WHATSAPP DA CLÍNICA (TASK E)
+      // Substitua pelo WhatsApp oficial com DDI + DDD (ex: "5511999998888")
+      // =========================================================================
+      const CLINIC_WHATSAPP_NUMBER = "41000000000"; // PLACEHOLDER — Substituir pelo WhatsApp oficial
+
+      // ----------------------------------------------------
+      // 1. HERO: SCROLL-DRIVEN 3D FRAME ANIMATION ENGINE (96 FRAMES, 3-DIGIT)
+      // ----------------------------------------------------
+      const HERO_TOTAL = 96;
+      const HERO_BATCH = 8;
+      const heroCanvas = document.getElementById('hero-canvas');
+      const heroScrollContainer = document.getElementById('hero-scroll-container');
+      const heroStickyViewport = document.getElementById('hero-sticky-viewport');
+      const heroHudStageFrame = document.getElementById('hud-stage-frame');
+      const heroHudFrameIndicator = document.getElementById('hud-frame-indicator');
+      const heroHudScrollBar = document.getElementById('hud-scroll-bar');
+
+      if (heroCanvas && heroScrollContainer && heroStickyViewport) {
+        const hCtx = heroCanvas.getContext('2d');
+        const heroFrames = new Array(HERO_TOTAL);
+        let heroCurrentIndex = 0;
+        let heroTargetIndex = 0;
+        let isHeroTicking = false;
+
+        // Strictly 3-digit frame URL format: /hero-frames/frame_001.jpg ... frame_096.jpg
+        function getHeroFrameUrl(index) {
+          const num = index + 1;
+          const pad3 = String(num).padStart(3, '0');
+          return `/hero-frames/frame_${pad3}.jpg`;
+        }
+
+        function drawHeroFrame(index) {
+          let frameToDraw = heroFrames[index];
+          if (!frameToDraw || !frameToDraw.complete || frameToDraw.naturalWidth === 0) {
+            for (let offset = 1; offset < HERO_TOTAL; offset++) {
+              if (index - offset >= 0 && heroFrames[index - offset] && heroFrames[index - offset].complete) {
+                frameToDraw = heroFrames[index - offset];
+                break;
+              }
+              if (index + offset < HERO_TOTAL && heroFrames[index + offset] && heroFrames[index + offset].complete) {
+                frameToDraw = heroFrames[index + offset];
+                break;
+              }
+            }
+          }
+
+          if (!frameToDraw || !frameToDraw.complete || frameToDraw.naturalWidth === 0) return;
+
+          const dpr = window.devicePixelRatio || 1;
+          const cw = heroCanvas.width;
+          const ch = heroCanvas.height;
+          hCtx.clearRect(0, 0, cw, ch);
+
+          const imgW = frameToDraw.naturalWidth;
+          const imgH = frameToDraw.naturalHeight;
+          const imgAspect = imgW / imgH; // 1920 / 1080 = 1.7778
+
+          const isDesktop = window.innerWidth >= 1024;
+          let targetCenterX = cw * 0.5;
+          let targetCenterY = ch * 0.5;
+          let drawW, drawH;
+
+          if (isDesktop && heroHudStageFrame) {
+            const frameRect = heroHudStageFrame.getBoundingClientRect();
+            const canvasRect = heroCanvas.getBoundingClientRect();
+            targetCenterX = (frameRect.left + frameRect.width / 2 - canvasRect.left) * dpr;
+            targetCenterY = (frameRect.top + frameRect.height / 2 - canvasRect.top) * dpr;
+            drawH = frameRect.height * dpr * 1.32;
+            drawW = drawH * imgAspect;
+          } else {
+            const canvasAspect = cw / ch;
+            if (canvasAspect > imgAspect) {
+              drawW = cw * 1.15;
+              drawH = drawW / imgAspect;
+            } else {
+              drawH = ch * 0.88;
+              drawW = drawH * imgAspect;
+            }
+            targetCenterY = ch * 0.52;
+          }
+
+          const drawX = targetCenterX - (drawW / 2);
+          const drawY = targetCenterY - (drawH / 2);
+          hCtx.drawImage(frameToDraw, drawX, drawY, drawW, drawH);
+
+          if (heroHudFrameIndicator) {
+            heroHudFrameIndicator.textContent = `FRAME ${String(index + 1).padStart(3, '0')}/${String(HERO_TOTAL).padStart(3, '0')}`;
+          }
+          if (heroHudScrollBar) {
+            heroHudScrollBar.style.width = `${((index + 1) / HERO_TOTAL) * 100}%`;
+          }
+        }
+
+        function resizeHeroCanvas() {
+          const dpr = window.devicePixelRatio || 1;
+          const rect = heroStickyViewport.getBoundingClientRect();
+          heroCanvas.width = rect.width * dpr;
+          heroCanvas.height = rect.height * dpr;
+          drawHeroFrame(heroCurrentIndex);
+        }
+
+        function onHeroScroll() {
+          const rect = heroScrollContainer.getBoundingClientRect();
+          const scrollableDistance = rect.height - window.innerHeight;
+          if (scrollableDistance <= 0) return;
+
+          const scrolled = -rect.top;
+          const progress = Math.max(0, Math.min(1, scrolled / scrollableDistance));
+          heroTargetIndex = Math.min(HERO_TOTAL - 1, Math.floor(progress * HERO_TOTAL));
+
+          if (!isHeroTicking) {
+            requestAnimationFrame(() => {
+              heroCurrentIndex = heroTargetIndex;
+              drawHeroFrame(heroCurrentIndex);
+              isHeroTicking = false;
+            });
+            isHeroTicking = true;
+          }
+        }
+
+        function loadHeroBatches(startIndex) {
+          if (startIndex >= HERO_TOTAL) return;
+          const endIndex = Math.min(startIndex + HERO_BATCH, HERO_TOTAL);
+          let loadedInBatch = 0;
+          const batchTotal = endIndex - startIndex;
+
+          for (let i = startIndex; i < endIndex; i++) {
+            const img = new Image();
+            const frameIdx = i;
+            img.src = getHeroFrameUrl(frameIdx);
+            img.onload = () => {
+              heroFrames[frameIdx] = img;
+              loadedInBatch++;
+              if (frameIdx === heroCurrentIndex) drawHeroFrame(heroCurrentIndex);
+              if (loadedInBatch === batchTotal) {
+                setTimeout(() => loadHeroBatches(endIndex), 25);
+              }
+            };
+            img.onerror = () => {
+              loadedInBatch++;
+              if (loadedInBatch === batchTotal) setTimeout(() => loadHeroBatches(endIndex), 25);
+            };
+          }
+        }
+
+        const initialHeroFrame = new Image();
+        initialHeroFrame.src = getHeroFrameUrl(0);
+        initialHeroFrame.onload = () => {
+          heroFrames[0] = initialHeroFrame;
+          resizeHeroCanvas();
+          drawHeroFrame(0);
+          loadHeroBatches(1);
+        };
+
+        window.addEventListener('resize', resizeHeroCanvas, { passive: true });
+        window.addEventListener('scroll', onHeroScroll, { passive: true });
+        resizeHeroCanvas();
+      }
+
+      // ----------------------------------------------------
+      // 2. TASK A: REAL 3D TURNTABLE INSPECTOR (96 FRAMES, ±35°)
+      // ----------------------------------------------------
+      const TURNTABLE_TOTAL = 96;
+      const turntableCanvas = document.getElementById('turntableCanvas');
+      const turntableStage = document.getElementById('turntableStage');
+      const turntableDeg = document.getElementById('turntableDeg');
+      const turntableFrameIndicator = document.getElementById('turntableFrameIndicator');
+
+      if (turntableCanvas && turntableStage) {
+        const tCtx = turntableCanvas.getContext('2d');
+        const turntableFrames = new Array(TURNTABLE_TOTAL);
+        // Start centered at frame index 47 (degree ≈ 0°)
+        let turntableIndex = 47;
+        let isTurntableTicking = false;
+        let isDragging = false;
+        let startX = 0;
+        let startIndex = 47;
+
+        function getTurntableUrl(idx) {
+          const pad3 = String(idx + 1).padStart(3, '0');
+          return `/turntable-frames/frame_${pad3}.jpg`;
+        }
+
+        function drawTurntableFrame(idx) {
+          let img = turntableFrames[idx];
+          if (!img || !img.complete || img.naturalWidth === 0) {
+            for (let offset = 1; offset < TURNTABLE_TOTAL; offset++) {
+              if (idx - offset >= 0 && turntableFrames[idx - offset] && turntableFrames[idx - offset].complete) {
+                img = turntableFrames[idx - offset];
+                break;
+              }
+              if (idx + offset < TURNTABLE_TOTAL && turntableFrames[idx + offset] && turntableFrames[idx + offset].complete) {
+                img = turntableFrames[idx + offset];
+                break;
+              }
+            }
+          }
+          if (!img || !img.complete || img.naturalWidth === 0) return;
+
+          const dpr = window.devicePixelRatio || 1;
+          const rect = turntableStage.getBoundingClientRect();
+          turntableCanvas.width = rect.width * dpr;
+          turntableCanvas.height = rect.height * dpr;
+
+          const cw = turntableCanvas.width;
+          const ch = turntableCanvas.height;
+          tCtx.clearRect(0, 0, cw, ch);
+
+          const imgW = img.naturalWidth;
+          const imgH = img.naturalHeight;
+          const imgAspect = imgW / imgH;
+
+          let dw, dh;
+          const canvasAspect = cw / ch;
+          if (canvasAspect > imgAspect) {
+            dh = ch * 0.96;
+            dw = dh * imgAspect;
+          } else {
+            dw = cw * 0.96;
+            dh = dw / imgAspect;
+          }
+
+          const dx = (cw - dw) / 2;
+          const dy = (ch - dh) / 2;
+          tCtx.drawImage(img, dx, dy, dw, dh);
+
+          // Required degree formula: degree = -35 + (frameIndex / 95) * 70
+          const degree = -35 + (idx / 95) * 70;
+          if (turntableDeg) {
+            turntableDeg.textContent = `${Math.round(degree)}°`;
+          }
+          if (turntableFrameIndicator) {
+            turntableFrameIndicator.textContent = `FRAME ${String(idx + 1).padStart(3, '0')}/${String(TURNTABLE_TOTAL).padStart(3, '0')}`;
+          }
+        }
+
+        function setTurntableIndex(newIdx) {
+          turntableIndex = Math.max(0, Math.min(TURNTABLE_TOTAL - 1, Math.round(newIdx)));
+          if (!isTurntableTicking) {
+            requestAnimationFrame(() => {
+              drawTurntableFrame(turntableIndex);
+              isTurntableTicking = false;
+            });
+            isTurntableTicking = true;
+          }
+        }
+
+        function onDragStart(clientX) {
+          isDragging = true;
+          startX = clientX;
+          startIndex = turntableIndex;
+          turntableStage.classList.add('cursor-grabbing');
+        }
+
+        function onDragMove(clientX) {
+          if (!isDragging) return;
+          const deltaX = clientX - startX;
+          const stageWidth = turntableStage.clientWidth || 500;
+          const frameDelta = (deltaX / stageWidth) * TURNTABLE_TOTAL * 1.1;
+          setTurntableIndex(startIndex + frameDelta);
+        }
+
+        function onDragEnd() {
+          if (!isDragging) return;
+          isDragging = false;
+          turntableStage.classList.remove('cursor-grabbing');
+        }
+
+        turntableStage.addEventListener('pointerdown', (e) => onDragStart(e.clientX));
+        window.addEventListener('pointermove', (e) => onDragMove(e.clientX));
+        window.addEventListener('pointerup', onDragEnd);
+
+        turntableStage.addEventListener('touchstart', (e) => onDragStart(e.touches[0].clientX), { passive: true });
+        window.addEventListener('touchmove', (e) => onDragMove(e.touches[0].clientX), { passive: true });
+        window.addEventListener('touchend', onDragEnd);
+
+        window.addEventListener('resize', () => drawTurntableFrame(turntableIndex), { passive: true });
+
+        // Preload frame 47 immediately
+        const initialTurntable = new Image();
+        initialTurntable.src = getTurntableUrl(47);
+        initialTurntable.onload = () => {
+          turntableFrames[47] = initialTurntable;
+          drawTurntableFrame(47);
+          loadTurntableBatches(0);
+        };
+
+        function loadTurntableBatches(startIdx) {
+          if (startIdx >= TURNTABLE_TOTAL) return;
+          const endIdx = Math.min(startIdx + 8, TURNTABLE_TOTAL);
+          let loaded = 0;
+          const total = endIdx - startIdx;
+          for (let i = startIdx; i < endIdx; i++) {
+            const img = new Image();
+            const idx = i;
+            img.src = getTurntableUrl(idx);
+            img.onload = () => {
+              turntableFrames[idx] = img;
+              loaded++;
+              if (idx === turntableIndex) drawTurntableFrame(turntableIndex);
+              if (loaded === total) {
+                setTimeout(() => loadTurntableBatches(endIdx), 25);
+              }
+            };
+            img.onerror = () => {
+              loaded++;
+              if (loaded === total) setTimeout(() => loadTurntableBatches(endIdx), 25);
+            };
+          }
+        }
+      }
+
+      // ----------------------------------------------------
+      // 3. TASK B: FULL-ARCH SKELETAL RECONSTRUCTION ENGINE (96 FRAMES)
+      // ----------------------------------------------------
+      const FULLARCH_TOTAL = 96;
+      const fullarchCanvas = document.getElementById('fullarchCanvas');
+      const fullarchScrollContainer = document.getElementById('fullarch-scroll-container');
+      const fullarchStickyViewport = document.getElementById('fullarch-sticky-viewport');
+      const fullarchFrameIndicator = document.getElementById('fullarchFrameIndicator');
+      const fullarchScrollBar = document.getElementById('fullarchScrollBar');
+      const fullarchPhaseBadge = document.getElementById('fullarchPhaseBadge');
+      const fullarchPhaseDesc = document.getElementById('fullarchPhaseDesc');
+
+      if (fullarchCanvas && fullarchScrollContainer && fullarchStickyViewport) {
+        const fCtx = fullarchCanvas.getContext('2d');
+        const fullarchFrames = new Array(FULLARCH_TOTAL);
+        let fullarchIndex = 0;
+        let targetFullarchIndex = 0;
+        let isFullarchTicking = false;
+
+        function getFullarchUrl(idx) {
+          const pad3 = String(idx + 1).padStart(3, '0');
+          return `/fullarch-frames/frame_${pad3}.jpg`;
+        }
+
+        function drawFullarchFrame(idx) {
+          let img = fullarchFrames[idx];
+          if (!img || !img.complete || img.naturalWidth === 0) {
+            for (let offset = 1; offset < FULLARCH_TOTAL; offset++) {
+              if (idx - offset >= 0 && fullarchFrames[idx - offset] && fullarchFrames[idx - offset].complete) {
+                img = fullarchFrames[idx - offset];
+                break;
+              }
+              if (idx + offset < FULLARCH_TOTAL && fullarchFrames[idx + offset] && fullarchFrames[idx + offset].complete) {
+                img = fullarchFrames[idx + offset];
+                break;
+              }
+            }
+          }
+          if (!img || !img.complete || img.naturalWidth === 0) return;
+
+          const dpr = window.devicePixelRatio || 1;
+          const rect = fullarchStickyViewport.getBoundingClientRect();
+          fullarchCanvas.width = rect.width * dpr;
+          fullarchCanvas.height = rect.height * dpr;
+
+          const cw = fullarchCanvas.width;
+          const ch = fullarchCanvas.height;
+          fCtx.clearRect(0, 0, cw, ch);
+
+          const imgW = img.naturalWidth;
+          const imgH = img.naturalHeight;
+          const imgAspect = imgW / imgH;
+
+          const isWide = window.innerWidth >= 768;
+          const targetCenterX = isWide ? cw * 0.65 : cw * 0.5;
+          const targetCenterY = isWide ? ch * 0.50 : ch * 0.38;
+
+          let dw, dh;
+          const canvasAspect = cw / ch;
+          if (canvasAspect > imgAspect) {
+            dw = cw * 1.15;
+            dh = dw / imgAspect;
+          } else {
+            dh = ch * 0.92;
+            dw = dh * imgAspect;
+          }
+
+          const dx = targetCenterX - (dw / 2);
+          const dy = targetCenterY - (dh / 2);
+          fCtx.drawImage(img, dx, dy, dw, dh);
+
+          if (fullarchFrameIndicator) {
+            fullarchFrameIndicator.textContent = `FRAME ${String(idx + 1).padStart(3, '0')}/${String(FULLARCH_TOTAL).padStart(3, '0')}`;
+          }
+          if (fullarchScrollBar) {
+            fullarchScrollBar.style.width = `${((idx + 1) / FULLARCH_TOTAL) * 100}%`;
+          }
+          if (fullarchPhaseBadge && fullarchPhaseDesc) {
+            if (idx < 32) {
+              fullarchPhaseBadge.textContent = '01 / MAPEAMENTO DOS PILARES';
+              fullarchPhaseDesc.textContent = 'Mapeamento tomográfico da densidade óssea mandibular com quatro pilares protéticos em titânio pré-calibrados para carga imediata.';
+            } else if (idx < 68) {
+              fullarchPhaseBadge.textContent = '02 / DESCIDA GUIADA';
+              fullarchPhaseDesc.textContent = 'Ponte monolítica em zircônia CAD/CAM descendo em trajetórias submilimétricas em direção aos encaixes cônicos multi-unit.';
+            } else {
+              fullarchPhaseBadge.textContent = '03 / TRAVAMENTO OCLUSAL';
+              fullarchPhaseDesc.textContent = 'Retenção cônica cone morse multiponto hermética, atingindo 1.200 MPa de estabilidade estrutural com zero microfenda.';
+            }
+          }
+        }
+
+        function onFullarchScroll() {
+          const rect = fullarchScrollContainer.getBoundingClientRect();
+          const scrollableDistance = rect.height - window.innerHeight;
+          if (scrollableDistance <= 0) return;
+
+          const scrolled = -rect.top;
+          const progress = Math.max(0, Math.min(1, scrolled / scrollableDistance));
+          targetFullarchIndex = Math.min(FULLARCH_TOTAL - 1, Math.floor(progress * FULLARCH_TOTAL));
+
+          if (!isFullarchTicking) {
+            requestAnimationFrame(() => {
+              fullarchIndex = targetFullarchIndex;
+              drawFullarchFrame(fullarchIndex);
+              isFullarchTicking = false;
+            });
+            isFullarchTicking = true;
+          }
+        }
+
+        window.addEventListener('scroll', onFullarchScroll, { passive: true });
+        window.addEventListener('resize', () => drawFullarchFrame(fullarchIndex), { passive: true });
+
+        const initialFullarch = new Image();
+        initialFullarch.src = getFullarchUrl(0);
+        initialFullarch.onload = () => {
+          fullarchFrames[0] = initialFullarch;
+          drawFullarchFrame(0);
+          loadFullarchBatches(1);
+        };
+
+        function loadFullarchBatches(startIdx) {
+          if (startIdx >= FULLARCH_TOTAL) return;
+          const endIdx = Math.min(startIdx + 8, FULLARCH_TOTAL);
+          let loaded = 0;
+          const total = endIdx - startIdx;
+          for (let i = startIdx; i < endIdx; i++) {
+            const img = new Image();
+            const idx = i;
+            img.src = getFullarchUrl(idx);
+            img.onload = () => {
+              fullarchFrames[idx] = img;
+              loaded++;
+              if (idx === fullarchIndex) drawFullarchFrame(fullarchIndex);
+              if (loaded === total) {
+                setTimeout(() => loadFullarchBatches(endIdx), 25);
+              }
+            };
+
+
+            img.onerror = () => {
+              loaded++;
+              if (loaded === total) setTimeout(() => loadFullarchBatches(endIdx), 25);
+            };
+          }
+        }
+      }
+
+      // ----------------------------------------------------
+      // 3B. DIGITAL SURGICAL PLANNING ENGINE (TASK F - 96 FRAMES)
+      // ----------------------------------------------------
+      const PLANNING_TOTAL = 96;
+      const planningCanvas = document.getElementById('planningCanvas');
+      const planningScrollContainer = document.getElementById('planning-scroll-container');
+      const planningStickyViewport = document.getElementById('planning-sticky-viewport');
+      const planningFrameIndicator = document.getElementById('planningFrameIndicator');
+      const planningScrollBar = document.getElementById('planningScrollBar');
+      const planningPhaseBadge = document.getElementById('planningPhaseBadge');
+      const planningPhaseDesc = document.getElementById('planningPhaseDesc');
+
+      if (planningCanvas && planningScrollContainer && planningStickyViewport) {
+        const pCtx = planningCanvas.getContext('2d');
+        const planningFrames = new Array(PLANNING_TOTAL);
+        let planningIndex = 0;
+        let targetPlanningIndex = 0;
+        let isPlanningTicking = false;
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        function getPlanningUrl(idx) {
+          const pad3 = String(idx + 1).padStart(3, '0');
+          return `/planning-frames/frame_${pad3}.jpg`;
+        }
+
+        function drawPlanningFrame(idx) {
+          let img = planningFrames[idx];
+          if (!img || !img.complete || img.naturalWidth === 0) {
+            for (let offset = 1; offset < PLANNING_TOTAL; offset++) {
+              if (idx - offset >= 0 && planningFrames[idx - offset] && planningFrames[idx - offset].complete) {
+                img = planningFrames[idx - offset];
+                break;
+              }
+              if (idx + offset < PLANNING_TOTAL && planningFrames[idx + offset] && planningFrames[idx + offset].complete) {
+                img = planningFrames[idx + offset];
+                break;
+              }
+            }
+          }
+          if (!img || !img.complete || img.naturalWidth === 0) return;
+
+          const dpr = window.devicePixelRatio || 1;
+          const rect = planningStickyViewport.getBoundingClientRect();
+          planningCanvas.width = rect.width * dpr;
+          planningCanvas.height = rect.height * dpr;
+
+          const cw = planningCanvas.width;
+          const ch = planningCanvas.height;
+          pCtx.clearRect(0, 0, cw, ch);
+
+          const imgW = img.naturalWidth;
+          const imgH = img.naturalHeight;
+          const imgAspect = imgW / imgH;
+
+          const isWide = window.innerWidth >= 768;
+          const targetCenterX = isWide ? cw * 0.64 : cw * 0.5;
+          const targetCenterY = isWide ? ch * 0.50 : ch * 0.38;
+
+          let dw, dh;
+          const canvasAspect = cw / ch;
+          if (canvasAspect > imgAspect) {
+            dw = cw * 1.15;
+            dh = dw / imgAspect;
+          } else {
+            dh = ch * 0.92;
+            dw = dh * imgAspect;
+          }
+
+          const dx = targetCenterX - (dw / 2);
+          const dy = targetCenterY - (dh / 2);
+          pCtx.drawImage(img, dx, dy, dw, dh);
+
+          if (planningFrameIndicator) {
+            planningFrameIndicator.textContent = `FRAME ${String(idx + 1).padStart(3, '0')}/${String(PLANNING_TOTAL).padStart(3, '0')}`;
+          }
+          if (planningScrollBar) {
+            planningScrollBar.style.width = `${((idx + 1) / PLANNING_TOTAL) * 100}%`;
+          }
+          if (planningPhaseBadge && planningPhaseDesc) {
+            if (idx < 32) {
+              planningPhaseBadge.textContent = '01 / MAPEAMENTO TOMOGRÁFICO MANDIBULAR';
+              planningPhaseDesc.textContent = 'Reconstrução volumétrica 3D da mandíbula em alta densidade com definição dos limites do canal mandibular.';
+            } else if (idx < 68) {
+              planningPhaseBadge.textContent = '02 / SIMULAÇÃO DE INSERÇÃO DO VETOR';
+              planningPhaseDesc.textContent = 'Descida do implante calibrada em tempo real com controle micrométrico de angulação e profundidade.';
+            } else {
+              planningPhaseBadge.textContent = '03 / TRAVAMENTO ÓSSEO & EIXO FINAL';
+              planningPhaseDesc.textContent = 'Assentamento anatômico final com distribuição ótima de forças mastigatórias e integridade óssea preservada.';
+            }
+          }
+        }
+
+        function onPlanningScroll() {
+          if (prefersReducedMotion) return;
+          const rect = planningScrollContainer.getBoundingClientRect();
+          const scrollableDistance = rect.height - window.innerHeight;
+          if (scrollableDistance <= 0) return;
+
+          const scrolled = -rect.top;
+          const progress = Math.max(0, Math.min(1, scrolled / scrollableDistance));
+          targetPlanningIndex = Math.min(PLANNING_TOTAL - 1, Math.floor(progress * PLANNING_TOTAL));
+
+          if (!isPlanningTicking) {
+            requestAnimationFrame(() => {
+              planningIndex = targetPlanningIndex;
+              drawPlanningFrame(planningIndex);
+              isPlanningTicking = false;
+            });
+            isPlanningTicking = true;
+          }
+        }
+
+        window.addEventListener('scroll', onPlanningScroll, { passive: true });
+        window.addEventListener('resize', () => drawPlanningFrame(planningIndex), { passive: true });
+
+        const initialPlanning = new Image();
+        initialPlanning.src = getPlanningUrl(0);
+        initialPlanning.onload = () => {
+          planningFrames[0] = initialPlanning;
+          drawPlanningFrame(0);
+          loadPlanningBatches(1);
+        };
+
+        function loadPlanningBatches(startIdx) {
+          if (startIdx >= PLANNING_TOTAL) return;
+          const endIdx = Math.min(startIdx + 8, PLANNING_TOTAL);
+          let loaded = 0;
+          const total = endIdx - startIdx;
+          for (let i = startIdx; i < endIdx; i++) {
+            const img = new Image();
+            const idx = i;
+            img.src = getPlanningUrl(idx);
+            img.onload = () => {
+              planningFrames[idx] = img;
+              loaded++;
+              if (idx === planningIndex) drawPlanningFrame(planningIndex);
+              if (loaded === total) {
+                setTimeout(() => loadPlanningBatches(endIdx), 25);
+              }
+            };
+            img.onerror = () => {
+              loaded++;
+              if (loaded === total) setTimeout(() => loadPlanningBatches(endIdx), 25);
+            };
+          }
+        }
+      }
+
+      // ----------------------------------------------------
+      // 4. INTERACTIVE ANATOMICAL ASSEMBLY BREAKDOWN TABS
+      // ----------------------------------------------------
+      const layerItems = document.querySelectorAll('.layer-item');
+      layerItems.forEach((item, idx) => {
+        item.addEventListener('click', () => {
+          layerItems.forEach(l => {
+            l.classList.remove('bg-surface-container-high', 'shadow-md');
+            l.classList.add('bg-surface-container-low');
+          });
+          item.classList.remove('bg-surface-container-low');
+          item.classList.add('bg-surface-container-high', 'shadow-md');
+        });
+      });
+
+      // ----------------------------------------------------
+      // 5. FAQ ACCORDION EXPANSION
+      // ----------------------------------------------------
+      const triggers = document.querySelectorAll('.faq-trigger');
+      triggers.forEach(trigger => {
+        trigger.addEventListener('click', () => {
+          const content = trigger.nextElementSibling;
+          const icon = trigger.querySelector('.faq-icon');
+          const isHidden = content.classList.contains('hidden');
+
+          document.querySelectorAll('.faq-content').forEach(c => c.classList.add('hidden'));
+          document.querySelectorAll('.faq-icon').forEach(i => i.style.transform = 'rotate(0deg)');
+
+          if (isHidden) {
+            content.classList.remove('hidden');
+            icon.style.transform = 'rotate(180deg)';
+          }
+        });
+      });
+
+      // ----------------------------------------------------
+      // 6. SCROLL-REVEAL ENGINE (fade + rise-in, staggered)
+      // ----------------------------------------------------
+      const revealTargets = document.querySelectorAll('.reveal-up, .reveal-stagger');
+      const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+      revealTargets.forEach(el => revealObserver.observe(el));
+
+      if ('ontouchstart' in window === false) {
+        document.querySelectorAll('.reveal-stagger').forEach(group => {
+          [...group.children].forEach((child, i) => {
+            child.style.transitionDelay = `${i * 80}ms`;
+          });
+        });
+      }
+
+      // ----------------------------------------------------
+      // 7. ANIMATED TELEMETRY COUNTERS
+      // ----------------------------------------------------
+      const counters = document.querySelectorAll('.js-counter');
+      const counterObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          const el = entry.target;
+          const target = parseFloat(el.dataset.countTo || '0');
+          const decimals = parseInt(el.dataset.decimals || '0', 10);
+          const duration = 1400;
+          const start = performance.now();
+          function tick(now) {
+            const p = Math.min(1, (now - start) / duration);
+            const eased = 1 - Math.pow(1 - p, 3);
+            el.textContent = (target * eased).toFixed(decimals);
+            if (p < 1) requestAnimationFrame(tick);
+          }
+          requestAnimationFrame(tick);
+          counterObserver.unobserve(el);
+        });
+      }, { threshold: 0.6 });
+      counters.forEach(el => counterObserver.observe(el));
+
+      // ----------------------------------------------------
+      // 8. CURSOR-REACTIVE SPOTLIGHT
+      // ----------------------------------------------------
+      const spotlight = document.getElementById('cursor-spotlight');
+      if (spotlight && window.matchMedia('(pointer: fine)').matches) {
+        window.addEventListener('pointermove', (e) => {
+          spotlight.style.opacity = '1';
+          spotlight.style.left = `${e.clientX}px`;
+          spotlight.style.top = `${e.clientY}px`;
+        }, { passive: true });
+        window.addEventListener('pointerleave', () => { spotlight.style.opacity = '0'; });
+      }
+
+      // ----------------------------------------------------
+      // 9. HERO HUD STAGE — MOUSE-REACTIVE 3D TILT
+      // ----------------------------------------------------
+      const heroHudFrame = document.getElementById('hud-stage-frame');
+      const heroSticky = document.getElementById('hero-sticky-viewport');
+      if (heroHudFrame && heroSticky && window.matchMedia('(pointer: fine)').matches) {
+        heroSticky.addEventListener('pointermove', (e) => {
+          const r = heroHudFrame.getBoundingClientRect();
+          const cx = r.left + r.width / 2;
+          const cy = r.top + r.height / 2;
+          const dx = (e.clientX - cx) / (r.width / 2);
+          const dy = (e.clientY - cy) / (r.height / 2);
+          const clampedX = Math.max(-1, Math.min(1, dx));
+          const clampedY = Math.max(-1, Math.min(1, dy));
+          heroHudFrame.style.transform =
+            `perspective(1200px) rotateY(${clampedX * 6}deg) rotateX(${clampedY * -6}deg)`;
+        }, { passive: true });
+        heroSticky.addEventListener('pointerleave', () => {
+          heroHudFrame.style.transform = 'perspective(1200px) rotateY(0deg) rotateX(0deg)';
+        });
+      }
+
+      // ----------------------------------------------------
+      // 10. LEAD QUALIFICATION MODAL ENGINE (TASK E)
+      // ----------------------------------------------------
+      const evalModal = document.getElementById('evaluationModal');
+      const evalModalBackdrop = document.getElementById('evaluationModalBackdrop');
+      const closeEvalModalBtn = document.getElementById('closeEvaluationModal');
+      const evalForm = document.getElementById('evaluationForm');
+      const phoneInput = document.getElementById('eval-phone');
+
+      function openEvaluationModal() {
+        if (!evalModal) return;
+        evalModal.classList.remove('opacity-0', 'pointer-events-none');
+        evalModal.classList.add('opacity-100', 'pointer-events-auto');
+        const dialog = evalModal.querySelector('.relative.z-10');
+        if (dialog) {
+          dialog.classList.remove('scale-95');
+          dialog.classList.add('scale-100');
+        }
+        document.body.style.overflow = 'hidden';
+        const firstInput = document.getElementById('eval-name');
+        if (firstInput) setTimeout(() => firstInput.focus(), 150);
+      }
+
+      function closeEvaluationModal() {
+        if (!evalModal) return;
+        evalModal.classList.remove('opacity-100', 'pointer-events-auto');
+        evalModal.classList.add('opacity-0', 'pointer-events-none');
+        const dialog = evalModal.querySelector('.relative.z-10');
+        if (dialog) {
+          dialog.classList.remove('scale-100');
+          dialog.classList.add('scale-95');
+        }
+        document.body.style.overflow = '';
+      }
+
+      // Bind all CTA buttons with data-path="evaluation"
+      document.querySelectorAll('[data-path="evaluation"]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          openEvaluationModal();
+        });
+      });
+
+      if (evalModalBackdrop) evalModalBackdrop.addEventListener('click', closeEvaluationModal);
+      if (closeEvalModalBtn) closeEvalModalBtn.addEventListener('click', closeEvaluationModal);
+
+      // Escape key to close
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && evalModal && evalModal.classList.contains('opacity-100')) {
+          closeEvaluationModal();
+        }
+      });
+
+      // Phone formatting mask: (XX) XXXXX-XXXX
+      if (phoneInput) {
+        phoneInput.addEventListener('input', (e) => {
+          let v = e.target.value.replace(/\D/g, '');
+          if (v.length > 11) v = v.slice(0, 11);
+          if (v.length > 6) {
+            v = `(${v.slice(0, 2)}) ${v.slice(2, 7)}-${v.slice(7)}`;
+          } else if (v.length > 2) {
+            v = `(${v.slice(0, 2)}) ${v.slice(2)}`;
+          } else if (v.length > 0) {
+            v = `(${v}`;
+          }
+          e.target.value = v;
+        });
+      }
+
+      // Handle form submission -> build pre-filled WhatsApp message
+      if (evalForm) {
+        evalForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const nome = (document.getElementById('eval-name')?.value || '').trim();
+          const whatsapp = (document.getElementById('eval-phone')?.value || '').trim();
+          const procedimento = (document.getElementById('eval-procedure')?.value || '').trim();
+          const urgencia = (document.getElementById('eval-urgency')?.value || '').trim();
+
+          const message = `Olá, meu nome é ${nome}. Tenho interesse em: ${procedimento}. Urgência: ${urgencia}. Meu WhatsApp: ${whatsapp}.`;
+          const waUrl = `https://wa.me/${CLINIC_WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+
+          // Detecção de dispositivos móveis para evitar bloqueio de pop-up (iOS Safari / Android Chrome)
+          const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+            || (navigator.maxTouchPoints > 1 && window.innerWidth <= 1024);
+
+          if (isMobile) {
+            // Em smartphones, window.location.href aciona o deep link direto para o app WhatsApp nativo
+            // com 100% de confiabilidade, sem nenhum bloqueio de pop-up do navegador
+            window.location.href = waUrl;
+          } else {
+            // Em desktop, abre em nova aba para manter o site aberto
+            window.open(waUrl, '_blank', 'noopener,noreferrer');
+          }
+
+          closeEvaluationModal();
+          evalForm.reset();
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
