@@ -4,7 +4,7 @@
   "private": true,
   "description": "Aurea Implant Architecture - Scroll-driven 3D Frame Animation Website",
   "scripts": {
-    "build": "node -e \"const fs=require('fs'); fs.copyFileSync('index.html', 'public/index.html'); console.log('Synced index.html to public/index.html');\"",
+    "build": "tailwindcss -i ./src/tailwind-input.css -o ./public/styles.css --minify -c ./tailwind.config.js && node -e \"const fs=require('fs'); fs.copyFileSync('index.html', 'public/index.html'); console.log('Synced index.html to public/index.html');\"",
     "dev": "node server.js",
     "start": "node server.js"
   },
@@ -14,5 +14,8 @@
     "scrollytelling",
     "tailwind"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "tailwindcss": "^3.4.19"
+  }
 }
